@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Form, Button, SearchField } from "@heroui/react";
 import { Search } from "lucide-react";
+import PropertySearchForm from "./form-store/PropertySearchForm";
 
 const images = [
   "https://images.unsplash.com/photo-1564013799919-ab600027ffc6",
@@ -52,7 +53,7 @@ const Banner = () => {
         <p className="text-lg mb-10 opacity-90 font-medium">Book apartments, villas and houses with trusted owners across Bangladesh.</p>
 
         {/* Search Form */}
-        <Form 
+        {/* <Form 
           onSubmit={handleSearch}
           className="bg-white/10 backdrop-blur-md p-3 rounded-full border border-white/30 flex flex-col md:flex-row gap-2 items-center justify-between max-w-5xl mx-auto shadow-2xl"
         >
@@ -79,7 +80,8 @@ const Banner = () => {
           <Button type="submit" className="bg-[#1a1a1a] text-white rounded-full items-center flex px-8 h-12 hover:bg-black transition-all">
             <Search size={18} className="mr-2" /> Search
           </Button>
-        </Form>
+        </Form> */}
+        <PropertySearchForm handleSearch={handleSearch} />
       </div>
     </section>
   );
