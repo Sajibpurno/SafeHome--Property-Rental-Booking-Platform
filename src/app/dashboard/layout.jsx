@@ -15,10 +15,10 @@ export default function DashboardLayout({ children }) {
     return <div className="h-screen flex items-center justify-center bg-gray-50 text-gray-500 font-medium">Loading Dashboard...</div>;
   }
 
-  // ইউজার রোল ডিফাইন করা (Default: user)
+
   const role = session?.user?.role || "user";
 
-  // রোল অনুযায়ী সাইডবার মেনু ডাইনামিক করা
+ 
   const menuItems = {
     user: [
       { label: "Overview", href: "/dashboard", icon: LayoutDashboard },

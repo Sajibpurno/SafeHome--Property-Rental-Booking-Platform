@@ -7,7 +7,6 @@ export default function DashboardOverview() {
   const { data: session } = authClient.useSession();
   const userName = session?.user?.name || "User";
 
-  // ডামি স্ট্যাটাস ডেটা (পরবর্তীতে API থেকে আসবে)
   const stats = [
     { label: "Total Bookings", value: "12", icon: Calendar, color: "text-blue-600" },
     { label: "Favorites", value: "8", icon: Heart, color: "text-rose-600" },
