@@ -16,7 +16,7 @@ export default function DashboardLayout({ children }) {
   }
 
 
-  const role = session?.user?.role || "user";
+  const role = session?.user?.role?.toLowerCase() || "user";
 
  
   const menuItems = {

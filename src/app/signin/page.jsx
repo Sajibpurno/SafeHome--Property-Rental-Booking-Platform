@@ -48,6 +48,13 @@ const SignInForm = () => {
     }
   };
 
+  const handleGoogleLogin =async () => {
+      await authClient.signIn.social({
+      provider: "google",
+      callbackURL: '/',
+      });
+    }
+
   return (
     <section className="w-full min-h-screen bg-[#f8f9fa] flex items-center justify-center px-4 py-12 font-sans relative">
 
@@ -127,7 +134,7 @@ const SignInForm = () => {
         </div>
 
         {/* Google Button */}
-        <button
+        <button onClick={handleGoogleLogin}
           type="button"
           disabled={isLoading}
           className="w-full h-12 rounded-xl bg-white border border-gray-200 text-black font-semibold text-sm hover:bg-gray-50 active:scale-[0.99] transition-all disabled:opacity-50 flex items-center justify-center gap-3"
@@ -144,7 +151,7 @@ const SignInForm = () => {
         {/* Footer Link */}
         <div className="text-center text-sm text-gray-700">
           Don&apos;t have an account?{" "}
-          <Link href={`/signup?redirect=${redirectTo}`} className="text-[#0066FF] hover:underline transition-all">
+          <Link href={`/resister?redirect=${redirectTo}`} className="text-[#0066FF] hover:underline transition-all">
             Register
           </Link>
         </div>

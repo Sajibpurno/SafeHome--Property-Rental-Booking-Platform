@@ -11,6 +11,9 @@ const SignUpForm = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [status, setStatus] = useState({ type: null, message: "" });
   const [isLoading, setIsLoading] = useState(false);
+  
+  // 👑 ডিফল্ট রোল Tenant সিলেক্ট থাকবে
+  const [role, setRole] = useState("Tenant");
 
   const searchParams = useSearchParams();
   const redirectTo = searchParams.get("redirect") || "/";
@@ -39,6 +42,7 @@ const SignUpForm = () => {
         password: user.password,
         name: user.name,
         image: user.userImg || undefined,
+        role: role, // এখানে "Tenant" অথবা "Owner" পাস হবে
       });
 
       if (error) {
@@ -54,6 +58,13 @@ const SignUpForm = () => {
       setIsLoading(false);
     }
   };
+
+  const handleGoogleLogin =async () => {
+      await authClient.signIn.social({
+      provider: "google",
+      callbackURL: '/',
+      });
+    }
 
   return (
     <section className="w-full min-h-screen bg-[#f8f9fa] flex items-center justify-center px-4 py-12 font-sans relative">
@@ -111,7 +122,7 @@ const SignUpForm = () => {
               type="text"
               name="userImg"
               disabled={isLoading}
-              placeholder="Photo URL"
+              placeholder="Photo URL (Direct or ImgBB link)"
               className="w-full h-12 rounded-xl bg-white border border-gray-200 px-4 text-sm text-gray-900 placeholder-gray-500 focus:outline-none focus:border-gray-400 focus:ring-1 focus:ring-gray-400 transition-all disabled:opacity-50"
             />
           </div>
@@ -130,25 +141,77 @@ const SignUpForm = () => {
             </button>
           </div>
 
+          {/* 🎯 কাস্টম টেইলউইন্ড রেডিও বাটন (পাশাপাশি থাকবে এবং সিলেক্টেড ডট দেখাবে) */}
+          <div className="flex flex-col gap-2 pt-2">
+            <label className="text-xs font-semibold text-gray-500 uppercase tracking-wider">Register As</label>
+            <div className="flex items-center gap-6 mt-1">
+              
+              {/* Tenant (Renter) Option */}
+              <label className="flex items-center gap-2.5 cursor-pointer group">
+                <div className="relative flex items-center justify-center">
+                  <input
+                    type="radio"
+                    name="role"
+                    value="Tenant"
+                    checked={role === "Tenant"}
+                    onChange={() => setRole("Tenant")}
+                    className="sr-only" // ডিফল্ট ব্রাউজার রেডিও হাইড করার জন্য
+                  />
+                  {/* বাইরের গোল বৃত্ত */}
+                  <div className={`w-5 h-5 rounded-full border flex items-center justify-center transition-all ${
+                    role === "Tenant" ? "border-black bg-black" : "border-gray-300 bg-white group-hover:border-gray-400"
+                  }`}>
+                    {/* ভেতরের সাদা ডট (সিলেক্ট হলে দেখাবে) */}
+                    {role === "Tenant" && <div className="w-2 h-2 rounded-full bg-white" />}
+                  </div>
+                </div>
+                <span className="text-sm text-gray-700 font-medium select-none">Tenant (Renter)</span>
+              </label>
+
+              {/* Property Owner Option */}
+              <label className="flex items-center gap-2.5 cursor-pointer group">
+                <div className="relative flex items-center justify-center">
+                  <input
+                    type="radio"
+                    name="role"
+                    value="Owner"
+                    checked={role === "Owner"}
+                    onChange={() => setRole("Owner")}
+                    className="sr-only"
+                  />
+                  {/* বাইরের গোল বৃত্ত */}
+                  <div className={`w-5 h-5 rounded-full border flex items-center justify-center transition-all ${
+                    role === "Owner" ? "border-black bg-black" : "border-gray-300 bg-white group-hover:border-gray-400"
+                  }`}>
+                    {/* ভেতরের সাদা ডট (সিলেক্ট হলে দেখাবে) */}
+                    {role === "Owner" && <div className="w-2 h-2 rounded-full bg-white" />}
+                  </div>
+                </div>
+                <span className="text-sm text-gray-700 font-medium select-none">Property Owner</span>
+              </label>
+
+            </div>
+          </div>
+
           {/* Register Button */}
           <button
             type="submit"
             disabled={isLoading}
-            className="w-full h-12 rounded-xl bg-[#111111] text-white font-medium text-base hover:bg-black active:scale-[0.99] transition-all mt-2 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
+            className="w-full h-12 rounded-xl bg-[#111111] text-white font-medium text-base hover:bg-black active:scale-[0.99] transition-all mt-4 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
           >
             {isLoading ? "Registering..." : "Register"}
           </button>
         </form>
 
         {/* Divider */}
-        <div className="relative flex items-center py-2">
+        <div className="relative flex items-center py-1">
           <div className="flex-grow border-t border-gray-200"></div>
           <span className="flex-shrink-0 mx-4 text-gray-400 text-xs uppercase tracking-wider">OR</span>
           <div className="flex-grow border-t border-gray-200"></div>
         </div>
 
         {/* Google Button */}
-        <button
+        <button onClick={handleGoogleLogin}
           type="button"
           disabled={isLoading}
           className="w-full h-12 rounded-xl bg-white border border-gray-200 text-black font-semibold text-sm hover:bg-gray-50 active:scale-[0.99] transition-all disabled:opacity-50 flex items-center justify-center gap-3"
