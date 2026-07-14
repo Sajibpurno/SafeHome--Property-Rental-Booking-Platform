@@ -42,12 +42,29 @@ const AddPropertyForm = () => {
       ...data,
       amenities,
       status: "pending",
+      createdAt: new Date(),
     };
 
-    console.log("Submitting payload:", payload);
+    try {
+      const res = await fetch("http://localhost:5000/properties", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
 
-    // TODO: call your server action here
-    // const res = await createProperty(payload);
+      const result = await res.json();
+
+      if (result.insertedId) {
+        alert("Property added successfully!");
+        e.target.reset();
+        setAmenities([]);
+      } else {
+        alert("Something went wrong. Try again.");
+      }
+    } catch (err) {
+      console.error(err);
+      alert("Server error. Make sure backend is running.");
+    }
   };
 
   const inputClass = `w-full border rounded-lg px-4 h-12 text-sm text-gray-800 placeholder:text-gray-400 outline-none focus:border-gray-400 transition`;
