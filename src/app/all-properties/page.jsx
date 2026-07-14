@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { MapPin } from "lucide-react";
 import { getAllProperties } from "@/lib/api/properties";
+import { Button } from "@heroui/react";
 
 export default function AllProperties() {
   const [properties, setProperties] = useState([]);
@@ -158,12 +159,13 @@ export default function AllProperties() {
                     ৳{Number(property.rent).toLocaleString()} /{property.rentType}
                   </p>
 
-                  <button
-                    onClick={() => router.push(`/allProperties/${property._id}`)}
+                  <Button
+                    onClick={() => router.push(`/all-properties/${property._id}`)}
                     className="mt-auto bg-black text-white text-sm font-medium py-2.5 rounded-lg hover:bg-gray-800 transition w-full"
                   >
-                    View Details
-                  </button>
+
+                    View Detail
+                  </Button>
                 </div>
               </div>
             ))}

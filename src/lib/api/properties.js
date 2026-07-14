@@ -4,3 +4,8 @@ export async function getAllProperties() {
   const res = await fetch(`${BASE_URL}/properties`, { cache: 'no-store' });
   return res.json();
 }
+
+export async function getPropertyById(id) {
+  const res = await fetch(`${BASE_URL}/properties/${id}`, { cache: 'no-store' });
+  return res.json();
+}
