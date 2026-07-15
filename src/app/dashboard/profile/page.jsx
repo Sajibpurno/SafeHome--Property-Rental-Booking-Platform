@@ -1,115 +1,143 @@
 "use client";
 
+import { useState } from "react";
 import { authClient } from "@/lib/auth-client";
-import { User, Mail, ShieldAlert, Calendar } from "lucide-react";
+import { Camera } from "lucide-react";
 
-export default function ProfilePage() {
-  const { data: session, isPending } = authClient.useSession();
+const ProfilePage = () => {
+  const { data: session } = authClient.useSession();
+  const [editing, setEditing] = useState(false);
+  const [form, setForm] = useState({
+    name: session?.user?.name || "",
+    phone: "",
+    address: "",
+  });
+  const [saving, setSaving] = useState(false);
 
-  if (isPending) {
-    return (
-      <div className="flex h-96 items-center justify-center text-gray-500 font-medium">
-        Loading Profile...
-      </div>
-    );
-  }
-
-
-  const user = session?.user || {
-    name: "Programming-Hero Instructor",
-    email: "tenant@gmail.com",
-    image: null,
-    role: "tenant",
-    createdAt: "2026-06-11",
+  const handleSave = async (e) => {
+    e.preventDefault();
+    setSaving(true);
+    setTimeout(() => {
+      setSaving(false);
+      setEditing(false);
+    }, 1000);
   };
 
-  const userRole = (user.role || "tenant").toLowerCase();
+  if (!session) return <p className="text-gray-400 text-sm">Loading...</p>;
 
-  const joinDate = user.createdAt 
-    ? new Date(user.createdAt).toISOString().split('T')[0] 
-    : "2026-06-11";
+  const user = session.user;
+  const initials = user.name?.charAt(0).toUpperCase();
 
   return (
-    <div className="max-w-5xl mx-auto bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden pb-12">
-      {/* 1. Top Gradient Banner */}
-      <div className="h-48 w-full bg-gradient-to-r from-blue-600 via-indigo-500 to-purple-600" />
+    <div className="flex flex-col items-center justify-center">
+      <h2 className="text-2xl text-center font-bold text-gray-900 mb-6">My Profile</h2>
 
-      {/* 2. Profile Image & Name Header */}
-      <div className="relative flex flex-col items-center -mt-20 mb-8">
-        <div className="w-36 h-36 rounded-full border-4 border-white bg-gray-200 shadow-md overflow-hidden flex items-center justify-center">
-          {user.image ? (
-            <img
-              src={user.image}
-              alt={user.name}
-              className="w-full h-full object-cover"
-            />
-          ) : (
+      <div className="max-w-2xl bg-white border border-gray-200 rounded-xl p-20 flex flex-col items-center justify-center shadow-2xl">
 
-            <img
-              src="https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?q=80&w=200&auto=format&fit=crop"
-              alt="Default Avatar"
-              className="w-full h-full object-cover"
-            />
-          )}
-        </div>
-
-        {/* User Name & Role Pill Badge */}
-        <h2 className="text-3xl font-bold text-gray-900 mt-4 tracking-tight">
-          {user.name}
-        </h2>
-        <span className="mt-2 px-4 py-1 bg-black text-white text-xs font-semibold rounded-full tracking-wide capitalize">
-          {userRole}
-        </span>
-      </div>
-
-      {/* 3. Information Cards Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 px-6 lg:px-12">
-        
-        {/* Card 1: Full Name */}
-        <div className="bg-white border border-gray-200/80 p-5 rounded-2xl flex items-center gap-4 shadow-[0_2px_8px_rgba(0,0,0,0.01)]">
-          <div className="p-3 bg-gray-50 rounded-xl text-gray-700">
-            <User size={22} />
+        {/* Avatar */}
+        <div className="flex items-center gap-5 mb-8">
+          <div className="relative">
+            {user.image ? (
+              <img src={user.image} alt={user.name} className="w-20 h-20 rounded-full object-cover" />
+            ) : (
+              <div className="w-20 h-20 rounded-full bg-blue-600 flex items-center justify-center text-white text-2xl font-bold">
+                {initials}
+              </div>
+            )}
+            <div className="absolute bottom-0 right-0 w-6 h-6 bg-gray-800 rounded-full flex items-center justify-center cursor-pointer">
+              <Camera size={12} className="text-white" />
+            </div>
           </div>
           <div>
-            <p className="text-xs font-medium text-gray-400">Full Name</p>
-            <p className="text-sm font-bold text-gray-800 mt-0.5">{user.name}</p>
+            <p className="text-lg font-bold text-gray-900">{user.name}</p>
+            <p className="text-sm text-gray-500">{user.email}</p>
+            <span className="text-xs bg-blue-100 text-blue-600 font-semibold px-2 py-0.5 rounded-full capitalize mt-1 inline-block">
+              {user.role || "tenant"}
+            </span>
           </div>
         </div>
 
-        {/* Card 2: Email Address */}
-        <div className="bg-white border border-gray-200/80 p-5 rounded-2xl flex items-center gap-4 shadow-[0_2px_8px_rgba(0,0,0,0.01)]">
-          <div className="p-3 bg-gray-50 rounded-xl text-gray-700">
-            <Mail size={22} />
+        {/* Info */}
+        <form onSubmit={handleSave} className="flex flex-col gap-5">
+          <div className="grid grid-cols-2 gap-5">
+            <div>
+              <label className="text-xs font-semibold text-gray-600 mb-1 block">Full Name</label>
+              <input
+                value={editing ? form.name : user.name}
+                onChange={(e) => setForm({ ...form, name: e.target.value })}
+                readOnly={!editing}
+                className={`w-full border rounded-lg px-4 h-11 text-sm text-gray-700 outline-none transition
+                  ${editing ? "border-gray-400 bg-white" : "border-gray-200 bg-gray-50"}`}
+              />
+            </div>
+            <div>
+              <label className="text-xs font-semibold text-gray-600 mb-1 block">Email</label>
+              <input
+                value={user.email}
+                readOnly
+                className="w-full border border-gray-200 rounded-lg px-4 h-11 text-sm text-gray-500 bg-gray-50 outline-none"
+              />
+            </div>
           </div>
-          <div>
-            <p className="text-xs font-medium text-gray-400">Email Address</p>
-            <p className="text-sm font-bold text-gray-800 mt-0.5">{user.email}</p>
-          </div>
-        </div>
 
-        {/* Card 3: Role */}
-        <div className="bg-white border border-gray-200/80 p-5 rounded-2xl flex items-center gap-4 shadow-[0_2px_8px_rgba(0,0,0,0.01)]">
-          <div className="p-3 bg-gray-50 rounded-xl text-gray-700">
-            <ShieldAlert size={22} />
+          <div className="grid grid-cols-2 gap-5">
+            <div>
+              <label className="text-xs font-semibold text-gray-600 mb-1 block">Phone</label>
+              <input
+                value={form.phone}
+                onChange={(e) => setForm({ ...form, phone: e.target.value })}
+                readOnly={!editing}
+                placeholder="017XXXXXXXXX"
+                className={`w-full border rounded-lg px-4 h-11 text-sm text-gray-700 outline-none transition
+                  ${editing ? "border-gray-400 bg-white" : "border-gray-200 bg-gray-50"}`}
+              />
+            </div>
+            <div>
+              <label className="text-xs font-semibold text-gray-600 mb-1 block">Address</label>
+              <input
+                value={form.address}
+                onChange={(e) => setForm({ ...form, address: e.target.value })}
+                readOnly={!editing}
+                placeholder="Your address"
+                className={`w-full border rounded-lg px-4 h-11 text-sm text-gray-700 outline-none transition
+                  ${editing ? "border-gray-400 bg-white" : "border-gray-200 bg-gray-50"}`}
+              />
+            </div>
           </div>
-          <div>
-            <p className="text-xs font-medium text-gray-400">Role</p>
-            <p className="text-sm font-bold text-gray-800 mt-0.5 capitalize">{userRole}</p>
-          </div>
-        </div>
 
-        {/* Card 4: Member Since */}
-        <div className="bg-white border border-gray-200/80 p-5 rounded-2xl flex items-center gap-4 shadow-[0_2px_8px_rgba(0,0,0,0.01)]">
-          <div className="p-3 bg-gray-50 rounded-xl text-gray-700">
-            <Calendar size={22} />
+          {/* Buttons */}
+          <div className="flex gap-3 pt-2">
+            {editing ? (
+              <>
+                <button
+                  type="button"
+                  onClick={() => setEditing(false)}
+                  className="px-6 py-2.5 border border-gray-200 text-sm text-gray-600 rounded-lg hover:bg-gray-50 transition"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  disabled={saving}
+                  className="px-6 py-2.5 bg-black text-white text-sm font-semibold rounded-lg hover:bg-gray-800 transition disabled:opacity-50"
+                >
+                  {saving ? "Saving..." : "Save Changes"}
+                </button>
+              </>
+            ) : (
+              <button
+                type="button"
+                onClick={() => setEditing(true)}
+                className="px-6 py-2.5 bg-black text-white text-sm font-semibold rounded-lg hover:bg-gray-800 transition"
+              >
+                Edit Profile
+              </button>
+            )}
           </div>
-          <div>
-            <p className="text-xs font-medium text-gray-400">Member Since</p>
-            <p className="text-sm font-bold text-gray-800 mt-0.5">{joinDate}</p>
-          </div>
-        </div>
-
+        </form>
       </div>
     </div>
   );
-}
+};
+
+export default ProfilePage;
