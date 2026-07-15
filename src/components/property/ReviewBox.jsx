@@ -4,7 +4,7 @@ import { useState } from "react";
 
 const mockReviews = [
   { id: 1, name: "Tenant", rating: 5, comment: "Good" },
-  { id: 2, name: "Hamba", rating: 5, comment: "Ful bokacoda" },
+  { id: 2, name: "Hamba", rating: 5, comment: "Nice" },
 ];
 
 export default function ReviewBox({ propertyId }) {
