@@ -21,20 +21,20 @@ export default function DashboardLayout({ children }) {
 
   const menuItems = {
     user: [
-      { label: "Overview", href: "/dashboard", icon: LayoutDashboard },
+      { label: "Overview", href: "/dashboard/overview", icon: LayoutDashboard },
       { label: "My Bookings", href: "/dashboard/bookings", icon: CalendarDays },
       { label: "Favorites", href: "/dashboard/favorites", icon: Heart },
       { label: "Profile", href: "/dashboard/profile", icon: User },
     ],
     owner: [
-      { label: "Overview", href: "/dashboard", icon: LayoutDashboard },
+      { label: "Overview", href: "/dashboard/overview", icon: LayoutDashboard },
       { label: "Add Property", href: "/dashboard/add-properties", icon: PlusCircleIcon },
       { label: "My Properties", href: "/dashboard/my-properties", icon: Home },
       { label: "Bookings Received", href: "/dashboard/bookings", icon: CalendarDays },
       { label: "Profile", href: "/dashboard/profile", icon: User },
     ],
     admin: [
-      { label: "Admin Overview", href: "/dashboard", icon: LayoutDashboard },
+      { label: "Admin Overview", href: "/dashboard/overview", icon: LayoutDashboard },
       { label: "Manage Users", href: "/dashboard/users", icon: User },
       { label: "Verify Properties", href: "/dashboard/verify", icon: Home },
     ],

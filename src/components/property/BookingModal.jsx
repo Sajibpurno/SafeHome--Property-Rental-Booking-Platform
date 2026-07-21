@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { createBooking } from "@/lib/api/bookings";
 import { authClient } from "@/lib/auth-client";
+import { toast } from "@heroui/react";
 
 export default function BookingModal({ property, onClose }) {
   const { data: session } = authClient.useSession();
@@ -35,14 +36,14 @@ export default function BookingModal({ property, onClose }) {
     try {
       const res = await createBooking(payload);
       if (res.insertedId) {
-        alert("Booking successful!");
+        toast.success("Booking successful!");
         onClose();
       } else {
-        alert("Something went wrong.");
+        toast.error("Something went wrong.");
       }
     } catch (err) {
       console.error(err);
-      alert("Server error.");
+      toast.error("Something went wrong.");
     } finally {
       setLoading(false);
     }
