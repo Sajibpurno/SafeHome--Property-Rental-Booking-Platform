@@ -1,10 +1,12 @@
 "use client";
 
 import React, { useState } from "react";
+import { authClient } from "@/lib/auth-client";
 
 const amenitiesList = ["WiFi", "Parking", "Air Conditioning", "Lift", "Security", "Generator", "Gym", "Swimming Pool"];
 
 const AddPropertyForm = () => {
+  const { data: session } = authClient.useSession();
   const [amenities, setAmenities] = useState([]);
   const [errors, setErrors] = useState({});
 
@@ -43,6 +45,8 @@ const AddPropertyForm = () => {
       amenities,
       status: "pending",
       createdAt: new Date(),
+      ownerEmail: session?.user?.email,
+      ownerName: session?.user?.name,
     };
 
     try {
@@ -74,10 +78,8 @@ const AddPropertyForm = () => {
   return (
     <div className="min-h-screen bg-white py-10 px-4">
       <div className="max-w-5xl mx-auto bg-white border border-gray-200 rounded-xl p-8 shadow-sm">
-
         <form onSubmit={handleSubmit} className="space-y-6">
 
-          {/* Row 1: Title + Location */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
               <label className={labelClass}>Property Title</label>
@@ -91,7 +93,6 @@ const AddPropertyForm = () => {
             </div>
           </div>
 
-          {/* Row 2: Property Type + Rent Type */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
               <label className={labelClass}>Property Type</label>
@@ -116,7 +117,6 @@ const AddPropertyForm = () => {
             </div>
           </div>
 
-          {/* Row 3: Rent + Size */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
               <label className={labelClass}>Monthly Rent</label>
@@ -130,7 +130,6 @@ const AddPropertyForm = () => {
             </div>
           </div>
 
-          {/* Row 4: Bedrooms + Bathrooms */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
               <label className={labelClass}>Bedrooms</label>
@@ -144,7 +143,6 @@ const AddPropertyForm = () => {
             </div>
           </div>
 
-          {/* Row 5: Extra Features + Image URL */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
               <label className={labelClass}>Extra Features</label>
@@ -157,7 +155,6 @@ const AddPropertyForm = () => {
             </div>
           </div>
 
-          {/* Description */}
           <div>
             <label className={labelClass}>Description</label>
             <textarea
@@ -169,7 +166,6 @@ const AddPropertyForm = () => {
             {errors.description && <p className={errorClass}>{errors.description}</p>}
           </div>
 
-          {/* Amenities */}
           <div>
             <label className={labelClass}>Amenities</label>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-y-3 gap-x-4 mt-2">
@@ -187,12 +183,8 @@ const AddPropertyForm = () => {
             </div>
           </div>
 
-          {/* Submit */}
           <div>
-            <button
-              type="submit"
-              className="bg-black text-white text-sm font-semibold px-8 py-3 rounded-lg hover:bg-gray-800 transition"
-            >
+            <button type="submit" className="bg-black text-white text-sm font-semibold px-8 py-3 rounded-lg hover:bg-gray-800 transition">
               Add Property
             </button>
           </div>

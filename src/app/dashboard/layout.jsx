@@ -30,12 +30,12 @@ export default function DashboardLayout({ children }) {
       { label: "Overview", href: "/dashboard/overview", icon: LayoutDashboard },
       { label: "Add Property", href: "/dashboard/add-properties", icon: PlusCircleIcon },
       { label: "My Properties", href: "/dashboard/my-properties", icon: Home },
-      { label: "Bookings Received", href: "/dashboard/bookings", icon: CalendarDays },
+      { label: "Bookings Received", href: "/dashboard/owner-bookings-received", icon: CalendarDays },
       { label: "Profile", href: "/dashboard/profile", icon: User },
     ],
     admin: [
       { label: "Admin Overview", href: "/dashboard/overview", icon: LayoutDashboard },
-      { label: "Manage Users", href: "/dashboard/users", icon: User },
+      { label: "Manage Users", href: "/dashboard/admin/users", icon: User },
       { label: "Verify Properties", href: "/dashboard/verify", icon: Home },
     ],
   };

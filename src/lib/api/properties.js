@@ -9,3 +9,8 @@ export async function getPropertyById(id) {
   const res = await fetch(`${BASE_URL}/properties/${id}`, { cache: 'no-store' });
   return res.json();
 }
+
+export async function getPropertiesByOwner(email) {
+  const res = await fetch(`${BASE_URL}/properties/owner/${email}`, { cache: 'no-store' });
+  return res.json();
+}

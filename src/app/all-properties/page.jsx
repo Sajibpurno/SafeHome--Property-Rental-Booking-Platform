@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { MapPin } from "lucide-react";
 import { getAllProperties } from "@/lib/api/properties";
 import { Button } from "@heroui/react";
+import { motion, AnimatePresence } from "framer-motion";
 
 export default function AllProperties() {
   const [properties, setProperties] = useState([]);
@@ -46,9 +47,13 @@ export default function AllProperties() {
 
   return (
     <div className="min-h-screen bg-white">
-
-      {/* Filter Bar */}
-      <div className="max-w-5xl mx-auto px-4 pt-10 pb-4">
+      {/* Filter Bar with Fade In Animation */}
+      <motion.div 
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+        className="max-w-5xl mx-auto px-4 pt-10 pb-4"
+      >
         <div className="bg-white border border-gray-200 rounded-xl p-5 shadow-sm">
           <div className="flex flex-wrap gap-3">
             {/* Location */}
@@ -59,7 +64,7 @@ export default function AllProperties() {
                 placeholder="Location"
                 value={filters.location}
                 onChange={(e) => setFilters({ ...filters, location: e.target.value })}
-                className="text-sm outline-none w-full text-gray-700 placeholder:text-gray-400"
+                className="text-sm outline-none w-full text-gray-700 placeholder:text-gray-400 bg-transparent"
               />
             </div>
 
@@ -67,7 +72,7 @@ export default function AllProperties() {
             <select
               value={filters.propertyType}
               onChange={(e) => setFilters({ ...filters, propertyType: e.target.value })}
-              className="border border-gray-200 rounded-lg px-3 h-11 text-sm text-gray-600 outline-none flex-1 min-w-[140px] bg-white"
+              className="border border-gray-200 rounded-lg px-3 h-11 text-sm text-gray-600 outline-none flex-1 min-w-[140px] bg-white cursor-pointer"
             >
               <option value="">Property Type</option>
               <option value="apartment">Apartment</option>
@@ -84,7 +89,7 @@ export default function AllProperties() {
                 placeholder="Max price"
                 value={filters.maxPrice}
                 onChange={(e) => setFilters({ ...filters, maxPrice: e.target.value })}
-                className="text-sm outline-none w-full text-gray-700 placeholder:text-gray-400"
+                className="text-sm outline-none w-full text-gray-700 placeholder:text-gray-400 bg-transparent"
               />
             </div>
 
@@ -96,7 +101,7 @@ export default function AllProperties() {
                 placeholder="Min price"
                 value={filters.minPrice}
                 onChange={(e) => setFilters({ ...filters, minPrice: e.target.value })}
-                className="text-sm outline-none w-full text-gray-700 placeholder:text-gray-400"
+                className="text-sm outline-none w-full text-gray-700 placeholder:text-gray-400 bg-transparent"
               />
             </div>
 
@@ -104,7 +109,7 @@ export default function AllProperties() {
             <select
               value={filters.sortBy}
               onChange={(e) => setFilters({ ...filters, sortBy: e.target.value })}
-              className="border border-gray-200 rounded-lg px-3 h-11 text-sm text-gray-600 outline-none flex-1 min-w-[130px] bg-white"
+              className="border border-gray-200 rounded-lg px-3 h-11 text-sm text-gray-600 outline-none flex-1 min-w-[130px] bg-white cursor-pointer"
             >
               <option value="">Sort By</option>
               <option value="low">Price: Low to High</option>
@@ -114,62 +119,99 @@ export default function AllProperties() {
 
           {/* Reset */}
           <div className="flex justify-end mt-3">
-            <button
+            <motion.button
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
               onClick={handleReset}
               className="border border-gray-200 text-sm text-gray-600 px-4 py-2 rounded-lg hover:bg-gray-50 transition"
             >
               Reset Filters
-            </button>
+            </motion.button>
           </div>
         </div>
-      </div>
+      </motion.div>
 
-      {/* Cards */}
+      {/* Cards Section */}
       <div className="max-w-5xl mx-auto px-4 py-8">
         {loading ? (
-          <p className="text-center text-gray-400 text-sm">Loading properties...</p>
+          <div className="flex justify-center items-center py-20">
+            <motion.div
+              animate={{ rotate: 360 }}
+              transition={{ repeat: Infinity, duration: 1, ease: "linear" }}
+              className="w-8 h-8 border-2 border-blue-600 border-t-transparent rounded-full"
+            />
+          </div>
         ) : filtered.length === 0 ? (
-          <p className="text-center text-gray-400 text-sm py-20">No properties found.</p>
+          <motion.p 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            className="text-center text-gray-400 text-sm py-20"
+          >
+            No properties found.
+          </motion.p>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {filtered.map((property) => (
-              <div
-                key={property._id}
-                className="bg-white border border-gray-200 rounded-xl overflow-hidden flex flex-col transition-all duration-300 hover:scale-105 hover:shadow-xl hover:border-blue-300"
-              >
-                {/* Image */}
-                <div className="h-48 w-full overflow-hidden">
-                  <img
-                    src={property.imageUrl}
-                    alt={property.title}
-                    className="w-full h-full object-cover"
-                  />
-                </div>
-
-                {/* Body */}
-                <div className="p-5 flex flex-col gap-2 flex-1">
-                  <h3 className="text-base font-semibold text-gray-900">{property.title}</h3>
-
-                  <div className="flex items-center gap-1 text-gray-500 text-sm">
-                    <span>📍</span>
-                    <span>{property.location}</span>
+          <motion.div 
+            initial="hidden"
+            animate="show"
+            variants={{
+              hidden: { opacity: 0 },
+              show: {
+                opacity: 1,
+                transition: {
+                  staggerChildren: 0.1
+                }
+              }
+            }}
+            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+          >
+            <AnimatePresence>
+              {filtered.map((property) => (
+                <motion.div
+                  key={property._id}
+                  variants={{
+                    hidden: { opacity: 0, y: 20 },
+                    show: { opacity: 1, y: 0 }
+                  }}
+                  exit={{ opacity: 0, scale: 0.9 }}
+                  whileHover={{ y: -6 }}
+                  transition={{ duration: 0.3 }}
+                  className="bg-white border border-gray-200 rounded-xl overflow-hidden flex flex-col shadow-sm hover:shadow-xl hover:border-blue-300 transition-shadow"
+                >
+                  {/* Image */}
+                  <div className="h-48 w-full overflow-hidden bg-gray-100">
+                    <motion.img
+                      whileHover={{ scale: 1.05 }}
+                      transition={{ duration: 0.4 }}
+                      src={property.imageUrl}
+                      alt={property.title}
+                      className="w-full h-full object-cover"
+                    />
                   </div>
 
-                  <p className="text-blue-600 font-semibold text-sm">
-                    ৳{Number(property.rent).toLocaleString()} /{property.rentType}
-                  </p>
+                  {/* Body */}
+                  <div className="p-5 flex flex-col gap-2 flex-1">
+                    <h3 className="text-base font-semibold text-gray-900">{property.title}</h3>
 
-                  <Button
-                    onClick={() => router.push(`/all-properties/${property._id}`)}
-                    className="mt-auto bg-black text-white text-sm font-medium py-2.5 rounded-lg hover:bg-gray-800 transition w-full"
-                  >
+                    <div className="flex items-center gap-1 text-gray-500 text-sm">
+                      <span>📍</span>
+                      <span>{property.location}</span>
+                    </div>
 
-                    View Detail
-                  </Button>
-                </div>
-              </div>
-            ))}
-          </div>
+                    <p className="text-blue-600 font-semibold text-sm">
+                      ৳{Number(property.rent).toLocaleString()} /{property.rentType}
+                    </p>
+
+                    <Button
+                      onClick={() => router.push(`/all-properties/${property._id}`)}
+                      className="mt-auto bg-black text-white text-sm font-medium py-2.5 rounded-lg hover:bg-gray-800 transition w-full cursor-pointer"
+                    >
+                      View Detail
+                    </Button>
+                  </div>
+                </motion.div>
+              ))}
+            </AnimatePresence>
+          </motion.div>
         )}
       </div>
     </div>
