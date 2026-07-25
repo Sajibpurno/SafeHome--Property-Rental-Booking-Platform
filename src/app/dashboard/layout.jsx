@@ -36,7 +36,8 @@ export default function DashboardLayout({ children }) {
     admin: [
       { label: "Admin Overview", href: "/dashboard/overview", icon: LayoutDashboard },
       { label: "Manage Users", href: "/dashboard/admin/users", icon: User },
-      { label: "Verify Properties", href: "/dashboard/verify", icon: Home },
+      { label: "Verify Properties", href: "/dashboard/admin/verify", icon: Home },
+        { label: "All Bookings", href: "/dashboard/admin/all-bookings", icon: CalendarDays },
     ],
   };
 

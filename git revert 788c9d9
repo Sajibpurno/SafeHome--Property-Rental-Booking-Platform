@@ -1,0 +1,13 @@
+[33m788c9d9[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m, [m[1;31morigin/main[m[33m)[m feat: add admin dashboard pages, owner booking requests, my properties and user dashboard complete
+[33mf015c4b[m feat: complete user dashboard with bookings, favorites, profile, overview charts and owner overview
+[33mfbedd21[m done the user profile
+[33me821ca1[m make the booking modal, also fetch api and show the bokking in user dashboard, and also done the favorite add list
+[33m38f31dd[m show the details page using id
+[33m0db1ab7[m get api and make card , also show the data in card
+[33m4218523[m added the add appartment form
+[33mc1e81e5[m fix: frontend blog and services section
+[33ma55ffe3[m admin, user, owser login and dashboard toggoling done  also google log in
+[33m35ac8fd[m add dashboard  overview and profile
+[33m999e8c4[m Tenant dashboard ui done
+[33m63a9619[m UI design part- navbar, banner, footer
+[33mcc04e6c[m Initial commit from Create Next App
