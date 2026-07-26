@@ -28,10 +28,10 @@ export default function ReviewBox({ propertyId }) {
 
   return (
     <div>
-      <h2 className="text-lg font-bold text-gray-900 mb-4">Reviews & Comments</h2>
+      <h2 className="text-lg font-bold text-foreground mb-4">Reviews & Comments</h2>
 
       {/* Submit Form */}
-      <form onSubmit={handleSubmit} className="border border-gray-200 rounded-xl p-4 mb-5 flex flex-col gap-3">
+      <form onSubmit={handleSubmit} className="border border-border rounded-xl p-4 mb-5 flex flex-col gap-3">
         <div className="flex gap-3">
           <input
             type="number"
@@ -39,14 +39,14 @@ export default function ReviewBox({ propertyId }) {
             max={5}
             value={rating}
             onChange={(e) => setRating(e.target.value)}
-            className="w-16 border border-gray-200 rounded-lg px-3 h-10 text-sm outline-none text-gray-700"
+            className="w-16 border border-border rounded-lg px-3 h-10 text-sm outline-none text-foreground"
           />
           <textarea
             value={comment}
             onChange={(e) => setComment(e.target.value)}
             placeholder="Write your review..."
             rows={2}
-            className="flex-1 border border-gray-200 rounded-lg px-3 py-2 text-sm outline-none resize-none text-gray-700 placeholder:text-gray-400"
+            className="flex-1 border border-border rounded-lg px-3 py-2 text-sm outline-none resize-none text-foreground placeholder:text-muted-foreground"
           />
         </div>
         <button
@@ -60,9 +60,9 @@ export default function ReviewBox({ propertyId }) {
       {/* Reviews List */}
       <div className="flex flex-col gap-3">
         {reviews.map((r) => (
-          <div key={r.id} className="border border-gray-100 rounded-xl p-4">
+          <div key={r.id} className="border border-border rounded-xl p-4">
             <div className="flex items-center justify-between mb-1">
-              <span className="text-sm font-semibold text-gray-700 capitalize">{r.name}</span>
+              <span className="text-sm font-semibold text-foreground capitalize">{r.name}</span>
               <span className="text-yellow-400 text-sm">{"★".repeat(r.rating)}</span>
             </div>
             <p className="text-sm text-blue-500">{r.comment}</p>

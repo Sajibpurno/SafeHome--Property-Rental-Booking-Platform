@@ -19,11 +19,11 @@ export default function PropertyDetailsPage() {
       .finally(() => setLoading(false));
   }, [id]);
 
-  if (loading) return <div className="min-h-screen flex items-center justify-center text-gray-400 text-sm">Loading...</div>;
-  if (!property) return <div className="min-h-screen flex items-center justify-center text-gray-400 text-sm">Property not found.</div>;
+  if (loading) return <div className="min-h-screen flex items-center justify-center text-muted-foreground text-sm">Loading...</div>;
+  if (!property) return <div className="min-h-screen flex items-center justify-center text-muted-foreground text-sm">Property not found.</div>;
 
   return (
-    <div className="min-h-screen bg-white py-10 px-4">
+    <div className="min-h-screen bg-background py-10 px-4">
       <div className="max-w-5xl mx-auto">
 
         {/* Top: Image + Booking Box */}
@@ -38,29 +38,29 @@ export default function PropertyDetailsPage() {
 
             {/* Title + Location */}
             <div className="mt-5">
-              <h1 className="text-2xl font-bold text-gray-900">{property.title}</h1>
+              <h1 className="text-2xl font-bold text-foreground">{property.title}</h1>
               <div className="flex items-center gap-1 text-blue-500 text-sm mt-1">
                 <MapPin size={14} />
                 <span>{property.location}</span>
               </div>
-              <p className="text-gray-500 text-sm mt-3 leading-relaxed">{property.description}</p>
+              <p className="text-muted-foreground text-sm mt-3 leading-relaxed">{property.description}</p>
             </div>
 
             {/* Info Grid */}
             <div className="grid grid-cols-2 gap-3 mt-6">
-              <div className="border border-gray-100 rounded-lg p-3 flex items-center gap-2 text-sm text-gray-600">
+              <div className="border border-border rounded-lg p-3 flex items-center gap-2 text-sm text-muted-foreground">
                 <BedDouble size={16} className="text-blue-500" />
                 {property.bedrooms} Bedrooms
               </div>
-              <div className="border border-gray-100 rounded-lg p-3 flex items-center gap-2 text-sm text-gray-600">
+              <div className="border border-border rounded-lg p-3 flex items-center gap-2 text-sm text-muted-foreground">
                 <Bath size={16} className="text-blue-500" />
                 {property.bathrooms} Bathrooms
               </div>
-              <div className="border border-gray-100 rounded-lg p-3 flex items-center gap-2 text-sm text-gray-600">
+              <div className="border border-border rounded-lg p-3 flex items-center gap-2 text-sm text-muted-foreground">
                 <Maximize2 size={16} className="text-blue-500" />
                 {property.size} sqft
               </div>
-              <div className="border border-gray-100 rounded-lg p-3 flex items-center gap-2 text-sm text-gray-600">
+              <div className="border border-border rounded-lg p-3 flex items-center gap-2 text-sm text-muted-foreground">
                 <Tag size={16} className="text-blue-500" />
                 {property.propertyType}
               </div>
@@ -68,11 +68,11 @@ export default function PropertyDetailsPage() {
 
             {/* Amenities */}
             {property.amenities?.length > 0 && (
-              <div className="mt-5 border border-gray-100 rounded-lg p-4">
+              <div className="mt-5 border border-border rounded-lg p-4">
                 <h3 className="text-sm font-semibold text-red-500 mb-3">🔴 Amenities</h3>
                 <div className="flex flex-wrap gap-2">
                   {property.amenities.map((a) => (
-                    <span key={a} className="text-xs bg-gray-100 text-gray-600 px-3 py-1 rounded-full flex items-center gap-1">
+                    <span key={a} className="text-xs bg-surface-2 text-muted-foreground px-3 py-1 rounded-full flex items-center gap-1">
                       ✅ {a}
                     </span>
                   ))}
@@ -82,7 +82,7 @@ export default function PropertyDetailsPage() {
 
             {/* Extra Features */}
             {property.extraFeatures && (
-              <div className="mt-4 border border-gray-100 rounded-lg p-4">
+              <div className="mt-4 border border-border rounded-lg p-4">
                 <h3 className="text-sm font-semibold text-orange-500 mb-2">🟠 Extra Features</h3>
                 <p className="text-sm text-blue-500">{property.extraFeatures}</p>
               </div>

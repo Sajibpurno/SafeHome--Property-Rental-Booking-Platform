@@ -14,7 +14,7 @@ export default function DashboardLayout({ children }) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   if (isPending) {
-    return <div className="h-screen flex flex-col items-center justify-center bg-gray-50 text-gray-500 font-medium"><HashLoader size={100} /><p>Loading Dashboard...</p></div>;
+    return <div className="h-screen flex flex-col items-center justify-center bg-muted text-muted-foreground font-medium"><HashLoader size={100} /><p>Loading Dashboard...</p></div>;
   }
 
   const role = session?.user?.role?.toLowerCase() || "user";
@@ -44,7 +44,7 @@ export default function DashboardLayout({ children }) {
   const currentLinks = menuItems[role] || menuItems.user;
 
   return (
-    <div className="flex h-screen bg-[#f8f9fa] overflow-hidden font-sans text-black">
+    <div className="flex h-screen bg-muted overflow-hidden font-sans text-foreground">
 
       {/* Mobile overlay */}
       {sidebarOpen && (
@@ -110,7 +110,7 @@ export default function DashboardLayout({ children }) {
               </div>
               <div className="truncate">
                 <p className="text-xs text-white font-medium truncate">{session?.user?.name}</p>
-                <p className="text-[10px] text-zinc-500 capitalize">{role} Account</p>
+                <p className="text-[10px] text-muted-foreground capitalize">{role} Account</p>
               </div>
             </div>
             <button

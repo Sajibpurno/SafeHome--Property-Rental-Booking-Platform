@@ -31,12 +31,12 @@ const OwnerMyProperties = () => {
     }
   };
 
-  if (loading) return <p className="text-gray-400 text-sm">Loading properties...</p>;
+  if (loading) return <p className="text-muted-foreground text-sm">Loading properties...</p>;
 
   return (
     <div>
       <div className="flex justify-between items-center">
-        <h2 className="text-2xl font-bold text-gray-900 mb-6">My Properties</h2>
+        <h2 className="text-2xl font-bold text-foreground mb-6">My Properties</h2>
         <Link href="/dashboard/add-properties">
         <button type="submit" className="bg-black text-white text-sm font-semibold px-6 py-2 rounded-lg hover:bg-gray-800 transition">
               Add Property
@@ -45,25 +45,25 @@ const OwnerMyProperties = () => {
       </div>
 
       {properties.length === 0 ? (
-        <div className="text-center py-20 text-gray-400 text-sm">
+        <div className="text-center py-20 text-muted-foreground text-sm">
           No properties found. Add your first property!
         </div>
       ) : (
-        <div className="overflow-x-auto rounded-xl border border-gray-200">
+        <div className="overflow-x-auto rounded-xl border border-border">
           <table className="w-full text-sm">
-            <thead className="bg-gray-50 border-b border-gray-200">
+            <thead className="bg-muted border-b border-border">
               <tr>
-                <th className="text-left px-5 py-3 text-xs font-semibold text-gray-500">Property</th>
-                <th className="text-left px-5 py-3 text-xs font-semibold text-gray-500">Location</th>
-                <th className="text-left px-5 py-3 text-xs font-semibold text-gray-500">Type</th>
-                <th className="text-left px-5 py-3 text-xs font-semibold text-gray-500">Rent</th>
-                <th className="text-left px-5 py-3 text-xs font-semibold text-gray-500">Status</th>
-                <th className="text-left px-5 py-3 text-xs font-semibold text-gray-500">Actions</th>
+                <th className="text-left px-5 py-3 text-xs font-semibold text-muted-foreground">Property</th>
+                <th className="text-left px-5 py-3 text-xs font-semibold text-muted-foreground">Location</th>
+                <th className="text-left px-5 py-3 text-xs font-semibold text-muted-foreground">Type</th>
+                <th className="text-left px-5 py-3 text-xs font-semibold text-muted-foreground">Rent</th>
+                <th className="text-left px-5 py-3 text-xs font-semibold text-muted-foreground">Status</th>
+                <th className="text-left px-5 py-3 text-xs font-semibold text-muted-foreground">Actions</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-100">
               {properties.map((property) => (
-                <tr key={property._id} className="hover:bg-gray-50 transition">
+                <tr key={property._id} className="hover:bg-muted transition">
                   {/* Property */}
                   <td className="px-5 py-4">
                     <div className="flex items-center gap-3">
@@ -72,22 +72,22 @@ const OwnerMyProperties = () => {
                         alt={property.title}
                         className="w-12 h-10 rounded-lg object-cover flex-shrink-0"
                       />
-                      <span className="font-medium text-gray-800 line-clamp-1">
+                      <span className="font-medium text-foreground line-clamp-1">
                         {property.title}
                       </span>
                     </div>
                   </td>
 
                   {/* Location */}
-                  <td className="px-5 py-4 text-gray-500">{property.location}</td>
+                  <td className="px-5 py-4 text-muted-foreground">{property.location}</td>
 
                   {/* Type */}
-                  <td className="px-5 py-4 text-gray-500 capitalize">{property.propertyType}</td>
+                  <td className="px-5 py-4 text-muted-foreground capitalize">{property.propertyType}</td>
 
                   {/* Rent */}
-                  <td className="px-5 py-4 font-semibold text-gray-800">
+                  <td className="px-5 py-4 font-semibold text-foreground">
                     ৳{Number(property.rent).toLocaleString()}
-                    <span className="text-xs text-gray-400 font-normal ml-1">/{property.rentType}</span>
+                    <span className="text-xs text-muted-foreground font-normal ml-1">/{property.rentType}</span>
                   </td>
 
                   {/* Status */}

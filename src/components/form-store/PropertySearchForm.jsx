@@ -28,13 +28,13 @@ const PropertySearchForm = ({ handleSearch }) => {
         className="bg-white/10 backdrop-blur-xl p-4 rounded-xl border border-white/20 flex flex-col md:flex-row gap-3 items-center justify-between max-w-6xl mx-auto shadow-[0_25px_50px_-12px_rgba(0,0,0,0.25)]"
       >
         {/* 1. Location Input */}
-        <div className="w-full md:flex-1 bg-white h-14 rounded-xl flex items-center px-4 gap-2 border border-gray-100">
-          <MapPin size={20} className="text-gray-400 flex-shrink-0" />
+        <div className="w-full md:flex-1 bg-card h-14 rounded-xl flex items-center px-4 gap-2 border border-border">
+          <MapPin size={20} className="text-muted-foreground flex-shrink-0" />
           <input
             type="text"
             name="location"
             placeholder="Location"
-            className="w-full bg-transparent text-sm text-gray-800 placeholder-gray-400 focus:outline-none"
+            className="w-full bg-transparent text-sm text-foreground placeholder:text-muted-foreground focus:outline-none"
           />
         </div>
 
@@ -43,12 +43,12 @@ const PropertySearchForm = ({ handleSearch }) => {
           <button
             type="button"
             onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-            className="w-full bg-white h-14 rounded-xl  flex items-center justify-between px-5 text-sm text-gray-800 border border-gray-100 md:border-l-0 md:border-r-0"
+            className="w-full bg-card h-14 rounded-xl  flex items-center justify-between px-5 text-sm text-foreground border border-border md:border-l-0 md:border-r-0"
           >
-            <span className={propertyType ? "text-gray-800" : "text-gray-400"}>
+            <span className={propertyType ? "text-foreground" : "text-muted-foreground"}>
               {propertyType || "Property Type"}
             </span>
-            <ChevronDown size={18} className={`text-gray-400 transition-transform duration-200 ${isDropdownOpen ? "rotate-180" : ""}`} />
+            <ChevronDown size={18} className={`text-muted-foreground transition-transform duration-200 ${isDropdownOpen ? "rotate-180" : ""}`} />
           </button>
 
           {/* Hidden Input for Form Data submission */}
@@ -56,7 +56,7 @@ const PropertySearchForm = ({ handleSearch }) => {
 
           {/* Dropdown Menu Options */}
           {isDropdownOpen && (
-            <div className="absolute top-full left-0 w-full bg-white mt-2 rounded-xl shadow-xl border border-gray-100 py-1 z-50 max-h-60 overflow-y-auto animate-in fade-in slide-in-from-top-2 duration-150">
+            <div className="absolute top-full left-0 w-full bg-card mt-2 rounded-xl shadow-xl border border-border py-1 z-50 max-h-60 overflow-y-auto animate-in fade-in slide-in-from-top-2 duration-150">
               {propertyOptions.map((option) => (
                 <button
                   key={option}
@@ -68,7 +68,7 @@ const PropertySearchForm = ({ handleSearch }) => {
                   className={`w-full text-left px-5 py-3 text-sm transition-colors ( ${
                     propertyType === option
                       ? "bg-emerald-50 text-emerald-600 font-medium"
-                      : "text-gray-700 hover:bg-gray-50"
+                      : "text-foreground hover:bg-muted"
                   }`}
                 >
                   {option}
@@ -79,24 +79,24 @@ const PropertySearchForm = ({ handleSearch }) => {
         </div>
 
         {/* 3. Max Price Input */}
-        <div className="w-full md:w-[18%] bg-white h-14 rounded-xl flex items-center px-4 gap-2 border border-gray-100 md:border-r-0">
-          <span className="text-gray-400 font-medium text-base">$</span>
+        <div className="w-full md:w-[18%] bg-card h-14 rounded-xl flex items-center px-4 gap-2 border border-border md:border-r-0">
+          <span className="text-muted-foreground font-medium text-base">$</span>
           <input
             type="number"
             name="maxPrice"
             placeholder="Max price"
-            className="w-full bg-transparent text-sm text-gray-800 placeholder-gray-400 focus:outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+            className="w-full bg-transparent text-sm text-foreground placeholder:text-muted-foreground focus:outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
           />
         </div>
 
         {/* 4. Min Price Input */}
-        <div className="w-full md:w-[18%] bg-white h-14 rounded-xl flex items-center px-4 gap-2 border border-gray-100">
-          <span className="text-gray-400 font-medium text-base">$</span>
+        <div className="w-full md:w-[18%] bg-card h-14 rounded-xl flex items-center px-4 gap-2 border border-border">
+          <span className="text-muted-foreground font-medium text-base">$</span>
           <input
             type="number"
             name="minPrice"
             placeholder="Min price"
-            className="w-full bg-transparent text-sm text-gray-800 placeholder-gray-400 focus:outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+            className="w-full bg-transparent text-sm text-foreground placeholder:text-muted-foreground focus:outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
           />
         </div>
 

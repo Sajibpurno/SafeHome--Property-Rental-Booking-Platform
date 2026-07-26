@@ -71,24 +71,24 @@ const AddPropertyForm = () => {
     }
   };
 
-  const inputClass = `w-full border rounded-lg px-4 h-12 text-sm text-gray-800 placeholder:text-gray-400 outline-none focus:border-gray-400 transition`;
-  const labelClass = `text-sm font-semibold text-gray-700 mb-1 block`;
+  const inputClass = `w-full border rounded-lg px-4 h-12 text-sm text-foreground placeholder:text-muted-foreground outline-none focus:border-ring transition`;
+  const labelClass = `text-sm font-semibold text-foreground mb-1 block`;
   const errorClass = `text-xs text-red-500 mt-1`;
 
   return (
-    <div className="min-h-screen bg-white py-10 px-4">
-      <div className="max-w-5xl mx-auto bg-white border border-gray-200 rounded-xl p-8 shadow-sm">
+    <div className="min-h-screen bg-background py-10 px-4">
+      <div className="max-w-5xl mx-auto bg-card border border-border rounded-xl p-8 shadow-sm">
         <form onSubmit={handleSubmit} className="space-y-6">
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
               <label className={labelClass}>Property Title</label>
-              <input name="title" placeholder="Luxury Apartment in Dhaka" className={`${inputClass} ${errors.title ? "border-red-400" : "border-gray-300"}`} />
+              <input name="title" placeholder="Luxury Apartment in Dhaka" className={`${inputClass} ${errors.title ? "border-red-400" : "border-border"}`} />
               {errors.title && <p className={errorClass}>{errors.title}</p>}
             </div>
             <div>
               <label className={labelClass}>Location</label>
-              <input name="location" placeholder="Khulna, Bangladesh" className={`${inputClass} ${errors.location ? "border-red-400" : "border-gray-300"}`} />
+              <input name="location" placeholder="Khulna, Bangladesh" className={`${inputClass} ${errors.location ? "border-red-400" : "border-border"}`} />
               {errors.location && <p className={errorClass}>{errors.location}</p>}
             </div>
           </div>
@@ -96,7 +96,7 @@ const AddPropertyForm = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
               <label className={labelClass}>Property Type</label>
-              <select name="propertyType" defaultValue="" className={`${inputClass} ${errors.propertyType ? "border-red-400" : "border-gray-300"} bg-white`}>
+              <select name="propertyType" defaultValue="" className={`${inputClass} ${errors.propertyType ? "border-red-400" : "border-border"} bg-card`}>
                 <option value="" disabled>Select Type</option>
                 <option value="apartment">Apartment</option>
                 <option value="villa">Villa</option>
@@ -107,7 +107,7 @@ const AddPropertyForm = () => {
             </div>
             <div>
               <label className={labelClass}>Rent Type</label>
-              <select name="rentType" defaultValue="" className={`${inputClass} ${errors.rentType ? "border-red-400" : "border-gray-300"} bg-white`}>
+              <select name="rentType" defaultValue="" className={`${inputClass} ${errors.rentType ? "border-red-400" : "border-border"} bg-card`}>
                 <option value="" disabled>Select Rent Type</option>
                 <option value="daily">Daily</option>
                 <option value="weekly">Weekly</option>
@@ -120,12 +120,12 @@ const AddPropertyForm = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
               <label className={labelClass}>Monthly Rent</label>
-              <input name="rent" type="number" placeholder="15000" className={`${inputClass} ${errors.rent ? "border-red-400" : "border-gray-300"}`} />
+              <input name="rent" type="number" placeholder="15000" className={`${inputClass} ${errors.rent ? "border-red-400" : "border-border"}`} />
               {errors.rent && <p className={errorClass}>{errors.rent}</p>}
             </div>
             <div>
               <label className={labelClass}>Property Size (sqft)</label>
-              <input name="size" type="number" placeholder="1200" className={`${inputClass} ${errors.size ? "border-red-400" : "border-gray-300"}`} />
+              <input name="size" type="number" placeholder="1200" className={`${inputClass} ${errors.size ? "border-red-400" : "border-border"}`} />
               {errors.size && <p className={errorClass}>{errors.size}</p>}
             </div>
           </div>
@@ -133,12 +133,12 @@ const AddPropertyForm = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
               <label className={labelClass}>Bedrooms</label>
-              <input name="bedrooms" type="number" placeholder="2" className={`${inputClass} ${errors.bedrooms ? "border-red-400" : "border-gray-300"}`} />
+              <input name="bedrooms" type="number" placeholder="2" className={`${inputClass} ${errors.bedrooms ? "border-red-400" : "border-border"}`} />
               {errors.bedrooms && <p className={errorClass}>{errors.bedrooms}</p>}
             </div>
             <div>
               <label className={labelClass}>Bathrooms</label>
-              <input name="bathrooms" type="number" placeholder="2" className={`${inputClass} ${errors.bathrooms ? "border-red-400" : "border-gray-300"}`} />
+              <input name="bathrooms" type="number" placeholder="2" className={`${inputClass} ${errors.bathrooms ? "border-red-400" : "border-border"}`} />
               {errors.bathrooms && <p className={errorClass}>{errors.bathrooms}</p>}
             </div>
           </div>
@@ -146,11 +146,11 @@ const AddPropertyForm = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
               <label className={labelClass}>Extra Features</label>
-              <input name="extraFeatures" placeholder="Balcony, Pet Friendly, Rooftop, CCTV" className={`${inputClass} border-gray-300`} />
+              <input name="extraFeatures" placeholder="Balcony, Pet Friendly, Rooftop, CCTV" className={`${inputClass} border-border`} />
             </div>
             <div>
               <label className={labelClass}>Image URL</label>
-              <input name="imageUrl" placeholder="Cloudinary / Imgbb URL" className={`${inputClass} ${errors.imageUrl ? "border-red-400" : "border-gray-300"}`} />
+              <input name="imageUrl" placeholder="Cloudinary / Imgbb URL" className={`${inputClass} ${errors.imageUrl ? "border-red-400" : "border-border"}`} />
               {errors.imageUrl && <p className={errorClass}>{errors.imageUrl}</p>}
             </div>
           </div>
@@ -161,7 +161,7 @@ const AddPropertyForm = () => {
               name="description"
               rows={4}
               placeholder="Write property details..."
-              className={`w-full border rounded-lg px-4 py-3 text-sm text-gray-800 placeholder:text-gray-400 outline-none focus:border-gray-400 transition resize-none ${errors.description ? "border-red-400" : "border-gray-300"}`}
+              className={`w-full border rounded-lg px-4 py-3 text-sm text-foreground placeholder:text-muted-foreground outline-none focus:border-ring transition resize-none ${errors.description ? "border-red-400" : "border-border"}`}
             />
             {errors.description && <p className={errorClass}>{errors.description}</p>}
           </div>
@@ -170,7 +170,7 @@ const AddPropertyForm = () => {
             <label className={labelClass}>Amenities</label>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-y-3 gap-x-4 mt-2">
               {amenitiesList.map((item) => (
-                <label key={item} className="flex items-center gap-2 cursor-pointer text-sm text-gray-700">
+                <label key={item} className="flex items-center gap-2 cursor-pointer text-sm text-foreground">
                   <input
                     type="checkbox"
                     checked={amenities.includes(item)}

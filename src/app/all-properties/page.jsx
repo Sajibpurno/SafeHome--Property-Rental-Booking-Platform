@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { MapPin } from "lucide-react";
+import { MapPin, ChevronLeft, ChevronRight } from "lucide-react";
 import { getAllProperties } from "@/lib/api/properties";
 import { Button } from "@heroui/react";
 import { motion, AnimatePresence } from "framer-motion";
@@ -10,6 +10,8 @@ import { motion, AnimatePresence } from "framer-motion";
 export default function AllProperties() {
   const [properties, setProperties] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
   const [filters, setFilters] = useState({
     location: "",
     propertyType: "",
@@ -21,11 +23,15 @@ export default function AllProperties() {
   const router = useRouter();
 
   useEffect(() => {
-    getAllProperties()
-      .then((data) => setProperties(data))
+    setLoading(true);
+    getAllProperties(currentPage, 6)
+      .then((data) => {
+        setProperties(data.properties || []);
+        setTotalPages(data.totalPages || 1);
+      })
       .catch(console.error)
       .finally(() => setLoading(false));
-  }, []);
+  }, [currentPage]);
 
   const handleReset = () => {
     setFilters({ location: "", propertyType: "", maxPrice: "", minPrice: "", sortBy: "" });
@@ -46,33 +52,31 @@ export default function AllProperties() {
     });
 
   return (
-    <div className="min-h-screen bg-white">
-      {/* Filter Bar with Fade In Animation */}
-      <motion.div 
+    <div className="min-h-screen bg-background">
+
+      {/* Filter Bar */}
+      <motion.div
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
         className="max-w-5xl mx-auto px-4 pt-10 pb-4"
       >
-        <div className="bg-white border border-gray-200 rounded-xl p-5 shadow-sm">
+        <div className="bg-card border border-border rounded-xl p-5 shadow-sm">
           <div className="flex flex-wrap gap-3">
-            {/* Location */}
-            <div className="flex items-center gap-2 border border-gray-200 rounded-lg px-3 h-11 flex-1 min-w-[140px]">
-              <MapPin size={15} className="text-gray-400" />
+            <div className="flex items-center gap-2 border border-border rounded-lg px-3 h-11 flex-1 min-w-[140px]">
+              <MapPin size={15} className="text-muted-foreground" />
               <input
                 type="text"
                 placeholder="Location"
                 value={filters.location}
                 onChange={(e) => setFilters({ ...filters, location: e.target.value })}
-                className="text-sm outline-none w-full text-gray-700 placeholder:text-gray-400 bg-transparent"
+                className="text-sm outline-none w-full text-foreground placeholder:text-muted-foreground bg-transparent"
               />
             </div>
-
-            {/* Property Type */}
             <select
               value={filters.propertyType}
               onChange={(e) => setFilters({ ...filters, propertyType: e.target.value })}
-              className="border border-gray-200 rounded-lg px-3 h-11 text-sm text-gray-600 outline-none flex-1 min-w-[140px] bg-white cursor-pointer"
+              className="border border-border rounded-lg px-3 h-11 text-sm text-muted-foreground outline-none flex-1 min-w-[140px] bg-card cursor-pointer"
             >
               <option value="">Property Type</option>
               <option value="apartment">Apartment</option>
@@ -80,50 +84,42 @@ export default function AllProperties() {
               <option value="house">House</option>
               <option value="office">Office</option>
             </select>
-
-            {/* Max Price */}
-            <div className="flex items-center gap-2 border border-gray-200 rounded-lg px-3 h-11 flex-1 min-w-[120px]">
-              <span className="text-gray-400 text-sm">৳</span>
+            <div className="flex items-center gap-2 border border-border rounded-lg px-3 h-11 flex-1 min-w-[120px]">
+              <span className="text-muted-foreground text-sm">৳</span>
               <input
                 type="number"
                 placeholder="Max price"
                 value={filters.maxPrice}
                 onChange={(e) => setFilters({ ...filters, maxPrice: e.target.value })}
-                className="text-sm outline-none w-full text-gray-700 placeholder:text-gray-400 bg-transparent"
+                className="text-sm outline-none w-full text-foreground placeholder:text-muted-foreground bg-transparent"
               />
             </div>
-
-            {/* Min Price */}
-            <div className="flex items-center gap-2 border border-gray-200 rounded-lg px-3 h-11 flex-1 min-w-[120px]">
-              <span className="text-gray-400 text-sm">৳</span>
+            <div className="flex items-center gap-2 border border-border rounded-lg px-3 h-11 flex-1 min-w-[120px]">
+              <span className="text-muted-foreground text-sm">৳</span>
               <input
                 type="number"
                 placeholder="Min price"
                 value={filters.minPrice}
                 onChange={(e) => setFilters({ ...filters, minPrice: e.target.value })}
-                className="text-sm outline-none w-full text-gray-700 placeholder:text-gray-400 bg-transparent"
+                className="text-sm outline-none w-full text-foreground placeholder:text-muted-foreground bg-transparent"
               />
             </div>
-
-            {/* Sort By */}
             <select
               value={filters.sortBy}
               onChange={(e) => setFilters({ ...filters, sortBy: e.target.value })}
-              className="border border-gray-200 rounded-lg px-3 h-11 text-sm text-gray-600 outline-none flex-1 min-w-[130px] bg-white cursor-pointer"
+              className="border border-border rounded-lg px-3 h-11 text-sm text-muted-foreground outline-none flex-1 min-w-[130px] bg-card cursor-pointer"
             >
               <option value="">Sort By</option>
               <option value="low">Price: Low to High</option>
               <option value="high">Price: High to Low</option>
             </select>
           </div>
-
-          {/* Reset */}
           <div className="flex justify-end mt-3">
             <motion.button
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
               onClick={handleReset}
-              className="border border-gray-200 text-sm text-gray-600 px-4 py-2 rounded-lg hover:bg-gray-50 transition"
+              className="border border-border text-sm text-muted-foreground px-4 py-2 rounded-lg hover:bg-muted transition"
             >
               Reset Filters
             </motion.button>
@@ -131,7 +127,7 @@ export default function AllProperties() {
         </div>
       </motion.div>
 
-      {/* Cards Section */}
+      {/* Cards */}
       <div className="max-w-5xl mx-auto px-4 py-8">
         {loading ? (
           <div className="flex justify-center items-center py-20">
@@ -142,25 +138,20 @@ export default function AllProperties() {
             />
           </div>
         ) : filtered.length === 0 ? (
-          <motion.p 
+          <motion.p
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            className="text-center text-gray-400 text-sm py-20"
+            className="text-center text-muted-foreground text-sm py-20"
           >
             No properties found.
           </motion.p>
         ) : (
-          <motion.div 
+          <motion.div
             initial="hidden"
             animate="show"
             variants={{
               hidden: { opacity: 0 },
-              show: {
-                opacity: 1,
-                transition: {
-                  staggerChildren: 0.1
-                }
-              }
+              show: { opacity: 1, transition: { staggerChildren: 0.1 } }
             }}
             className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
           >
@@ -175,10 +166,9 @@ export default function AllProperties() {
                   exit={{ opacity: 0, scale: 0.9 }}
                   whileHover={{ y: -6 }}
                   transition={{ duration: 0.3 }}
-                  className="bg-white border border-gray-200 rounded-xl overflow-hidden flex flex-col shadow-sm hover:shadow-xl hover:border-blue-300 transition-shadow"
+                  className="bg-card border border-border rounded-xl overflow-hidden flex flex-col shadow-sm hover:shadow-xl hover:border-blue-300 transition-shadow"
                 >
-                  {/* Image */}
-                  <div className="h-48 w-full overflow-hidden bg-gray-100">
+                  <div className="h-48 w-full overflow-hidden bg-surface-2">
                     <motion.img
                       whileHover={{ scale: 1.05 }}
                       transition={{ duration: 0.4 }}
@@ -187,20 +177,15 @@ export default function AllProperties() {
                       className="w-full h-full object-cover"
                     />
                   </div>
-
-                  {/* Body */}
                   <div className="p-5 flex flex-col gap-2 flex-1">
-                    <h3 className="text-base font-semibold text-gray-900">{property.title}</h3>
-
-                    <div className="flex items-center gap-1 text-gray-500 text-sm">
+                    <h3 className="text-base font-semibold text-foreground">{property.title}</h3>
+                    <div className="flex items-center gap-1 text-muted-foreground text-sm">
                       <span>📍</span>
                       <span>{property.location}</span>
                     </div>
-
                     <p className="text-blue-600 font-semibold text-sm">
                       ৳{Number(property.rent).toLocaleString()} /{property.rentType}
                     </p>
-
                     <Button
                       onClick={() => router.push(`/all-properties/${property._id}`)}
                       className="mt-auto bg-black text-white text-sm font-medium py-2.5 rounded-lg hover:bg-gray-800 transition w-full cursor-pointer"
@@ -212,6 +197,40 @@ export default function AllProperties() {
               ))}
             </AnimatePresence>
           </motion.div>
+        )}
+
+        {/* Pagination */}
+        {totalPages > 1 && (
+          <div className="flex items-center justify-center gap-2 mt-10">
+            <button
+              onClick={() => setCurrentPage((p) => Math.max(p - 1, 1))}
+              disabled={currentPage === 1}
+              className="w-9 h-9 flex items-center justify-center rounded-lg border border-border text-muted-foreground hover:bg-muted disabled:opacity-40 transition"
+            >
+              <ChevronLeft size={16} />
+            </button>
+
+            {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+              <button
+                key={page}
+                onClick={() => setCurrentPage(page)}
+                className={`w-9 h-9 rounded-lg text-sm font-medium transition
+                  ${currentPage === page
+                    ? "bg-black text-white"
+                    : "border border-border text-muted-foreground hover:bg-muted"}`}
+              >
+                {page}
+              </button>
+            ))}
+
+            <button
+              onClick={() => setCurrentPage((p) => Math.min(p + 1, totalPages))}
+              disabled={currentPage === totalPages}
+              className="w-9 h-9 flex items-center justify-center rounded-lg border border-border text-muted-foreground hover:bg-muted disabled:opacity-40 transition"
+            >
+              <ChevronRight size={16} />
+            </button>
+          </div>
         )}
       </div>
     </div>

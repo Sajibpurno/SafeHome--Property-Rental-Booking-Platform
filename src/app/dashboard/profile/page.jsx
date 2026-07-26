@@ -23,16 +23,16 @@ const ProfilePage = () => {
     }, 1000);
   };
 
-  if (!session) return <p className="text-gray-400 text-sm">Loading...</p>;
+  if (!session) return <p className="text-muted-foreground text-sm">Loading...</p>;
 
   const user = session.user;
   const initials = user.name?.charAt(0).toUpperCase();
 
   return (
     <div className="flex flex-col items-center justify-center">
-      <h2 className="text-2xl text-center font-bold text-gray-900 mb-6">My Profile</h2>
+      <h2 className="text-2xl text-center font-bold text-foreground mb-6">My Profile</h2>
 
-      <div className="max-w-2xl bg-white border border-gray-200 rounded-xl p-20 flex flex-col items-center justify-center shadow-2xl">
+      <div className="max-w-2xl bg-card border border-border rounded-xl p-20 flex flex-col items-center justify-center shadow-2xl">
 
         {/* Avatar */}
         <div className="flex items-center gap-5 mb-8">
@@ -49,8 +49,8 @@ const ProfilePage = () => {
             </div>
           </div>
           <div>
-            <p className="text-lg font-bold text-gray-900">{user.name}</p>
-            <p className="text-sm text-gray-500">{user.email}</p>
+            <p className="text-lg font-bold text-foreground">{user.name}</p>
+            <p className="text-sm text-muted-foreground">{user.email}</p>
             <span className="text-xs bg-blue-100 text-blue-600 font-semibold px-2 py-0.5 rounded-full capitalize mt-1 inline-block">
               {user.role || "tenant"}
             </span>
@@ -61,46 +61,46 @@ const ProfilePage = () => {
         <form onSubmit={handleSave} className="flex flex-col gap-5">
           <div className="grid grid-cols-2 gap-5">
             <div>
-              <label className="text-xs font-semibold text-gray-600 mb-1 block">Full Name</label>
+              <label className="text-xs font-semibold text-muted-foreground mb-1 block">Full Name</label>
               <input
                 value={editing ? form.name : user.name}
                 onChange={(e) => setForm({ ...form, name: e.target.value })}
                 readOnly={!editing}
-                className={`w-full border rounded-lg px-4 h-11 text-sm text-gray-700 outline-none transition
-                  ${editing ? "border-gray-400 bg-white" : "border-gray-200 bg-gray-50"}`}
+                className={`w-full border rounded-lg px-4 h-11 text-sm text-foreground outline-none transition
+                  ${editing ? "border-muted-foreground bg-card" : "border-border bg-muted"}`}
               />
             </div>
             <div>
-              <label className="text-xs font-semibold text-gray-600 mb-1 block">Email</label>
+              <label className="text-xs font-semibold text-muted-foreground mb-1 block">Email</label>
               <input
                 value={user.email}
                 readOnly
-                className="w-full border border-gray-200 rounded-lg px-4 h-11 text-sm text-gray-500 bg-gray-50 outline-none"
+                className="w-full border border-border rounded-lg px-4 h-11 text-sm text-muted-foreground bg-muted outline-none"
               />
             </div>
           </div>
 
           <div className="grid grid-cols-2 gap-5">
             <div>
-              <label className="text-xs font-semibold text-gray-600 mb-1 block">Phone</label>
+              <label className="text-xs font-semibold text-muted-foreground mb-1 block">Phone</label>
               <input
                 value={form.phone}
                 onChange={(e) => setForm({ ...form, phone: e.target.value })}
                 readOnly={!editing}
                 placeholder="017XXXXXXXXX"
-                className={`w-full border rounded-lg px-4 h-11 text-sm text-gray-700 outline-none transition
-                  ${editing ? "border-gray-400 bg-white" : "border-gray-200 bg-gray-50"}`}
+                className={`w-full border rounded-lg px-4 h-11 text-sm text-foreground outline-none transition
+                  ${editing ? "border-muted-foreground bg-card" : "border-border bg-muted"}`}
               />
             </div>
             <div>
-              <label className="text-xs font-semibold text-gray-600 mb-1 block">Address</label>
+              <label className="text-xs font-semibold text-muted-foreground mb-1 block">Address</label>
               <input
                 value={form.address}
                 onChange={(e) => setForm({ ...form, address: e.target.value })}
                 readOnly={!editing}
                 placeholder="Your address"
-                className={`w-full border rounded-lg px-4 h-11 text-sm text-gray-700 outline-none transition
-                  ${editing ? "border-gray-400 bg-white" : "border-gray-200 bg-gray-50"}`}
+                className={`w-full border rounded-lg px-4 h-11 text-sm text-foreground outline-none transition
+                  ${editing ? "border-muted-foreground bg-card" : "border-border bg-muted"}`}
               />
             </div>
           </div>
@@ -112,7 +112,7 @@ const ProfilePage = () => {
                 <button
                   type="button"
                   onClick={() => setEditing(false)}
-                  className="px-6 py-2.5 border border-gray-200 text-sm text-gray-600 rounded-lg hover:bg-gray-50 transition"
+                  className="px-6 py-2.5 border border-border text-sm text-muted-foreground rounded-lg hover:bg-muted transition"
                 >
                   Cancel
                 </button>

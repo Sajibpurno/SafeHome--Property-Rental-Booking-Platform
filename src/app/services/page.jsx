@@ -44,8 +44,8 @@ const ServicesPage = () => {
   return (
     <section className="py-16 px-4 max-w-6xl mx-auto">
       <div className="text-center mb-12">
-        <h2 className="text-4xl font-bold text-gray-900 mb-2">Our Services</h2>
-        <p className="text-gray-500 max-w-xl mx-auto text-base leading-relaxed">
+        <h2 className="text-4xl font-bold text-foreground mb-2">Our Services</h2>
+        <p className="text-muted-foreground max-w-xl mx-auto text-base leading-relaxed">
           We provide complete rental property solutions for both owners and tenants with trusted services and professional support.
         </p>
       </div>
@@ -54,13 +54,13 @@ const ServicesPage = () => {
         {services.map((service) => (
           <div
             key={service.id}
-            className="bg-white border border-gray-200 rounded-xl p-6 flex flex-col gap-4 transition-all duration-300 hover:scale-105 hover:shadow-xl hover:border-blue-300"
+            className="bg-card border border-border rounded-xl p-6 flex flex-col gap-4 transition-all duration-300 hover:scale-105 hover:shadow-xl hover:border-blue-300"
           >
             <div className="w-14 h-14 rounded-full bg-blue-100 flex items-center justify-center">
               {service.icon}
             </div>
-            <h3 className="text-lg font-semibold text-gray-900">{service.title}</h3>
-            <p className="text-gray-500 text-sm leading-relaxed">{service.desc}</p>
+            <h3 className="text-lg font-semibold text-foreground">{service.title}</h3>
+            <p className="text-muted-foreground text-sm leading-relaxed">{service.desc}</p>
           </div>
         ))}
       </div>

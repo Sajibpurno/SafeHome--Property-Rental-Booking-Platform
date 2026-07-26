@@ -25,12 +25,12 @@ export default function OwnerDashboard() {
         {stats.map((stat) => {
           const Icon = stat.icon;
           return (
-            <div key={stat.label} className="bg-white border border-gray-100 p-6 rounded-2xl shadow-[0_4px_20px_rgba(0,0,0,0.02)] flex flex-col justify-between h-36">
+            <div key={stat.label} className="bg-card border border-border p-6 rounded-2xl shadow-[0_4px_20px_rgba(0,0,0,0.02)] flex flex-col justify-between h-36">
               <div className="flex justify-between items-start">
-                <span className="text-xs font-semibold uppercase tracking-wider text-gray-400">{stat.label}</span>
+                <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">{stat.label}</span>
                 <Icon size={20} className={stat.color} />
               </div>
-              <span className="text-3xl font-bold text-gray-950 tracking-tight">{stat.value}</span>
+              <span className="text-3xl font-bold text-foreground tracking-tight">{stat.value}</span>
             </div>
           );
         })}

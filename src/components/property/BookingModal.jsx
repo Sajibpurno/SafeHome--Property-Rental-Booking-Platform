@@ -50,12 +50,12 @@ export default function BookingModal({ property, onClose }) {
   };
   return (
     <div className="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 flex items-center justify-center px-4">
-      <div className="bg-white rounded-2xl p-8 w-full max-w-lg shadow-2xl">
+      <div className="bg-card rounded-2xl p-8 w-full max-w-lg shadow-2xl">
 
         {/* Header */}
         <div className="text-center mb-6">
-          <h2 className="text-xl font-bold text-gray-900">Booking Properties</h2>
-          <p className="text-sm text-gray-400 mt-1">
+          <h2 className="text-xl font-bold text-foreground">Booking Properties</h2>
+          <p className="text-sm text-muted-foreground mt-1">
             Make changes to your profile here. Click save when you are done.
           </p>
         </div>
@@ -65,19 +65,19 @@ export default function BookingModal({ property, onClose }) {
           {/* Row 1: Name + Email */}
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="text-xs font-semibold text-gray-600 mb-1 block">User Name</label>
+              <label className="text-xs font-semibold text-muted-foreground mb-1 block">User Name</label>
               <input
                 value={session?.user?.name || ""}
                 readOnly
-                className="w-full border border-gray-200 rounded-lg px-4 h-11 text-sm text-gray-600 bg-gray-50 outline-none"
+                className="w-full border border-border rounded-lg px-4 h-11 text-sm text-muted-foreground bg-muted outline-none"
               />
             </div>
             <div>
-              <label className="text-xs font-semibold text-gray-600 mb-1 block">Email</label>
+              <label className="text-xs font-semibold text-muted-foreground mb-1 block">Email</label>
               <input
                 value={session?.user?.email || ""}
                 readOnly
-                className="w-full border border-gray-200 rounded-lg px-4 h-11 text-sm text-gray-600 bg-gray-50 outline-none"
+                className="w-full border border-border rounded-lg px-4 h-11 text-sm text-muted-foreground bg-muted outline-none"
               />
             </div>
           </div>
@@ -85,37 +85,37 @@ export default function BookingModal({ property, onClose }) {
           {/* Row 2: Phone + Date */}
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="text-xs font-semibold text-gray-600 mb-1 block">Phone</label>
+              <label className="text-xs font-semibold text-muted-foreground mb-1 block">Phone</label>
               <input
                 type="tel"
                 required
                 placeholder="017XXXXXXXXX"
                 value={form.contactNumber}
                 onChange={(e) => setForm({ ...form, contactNumber: e.target.value })}
-                className="w-full border border-gray-200 rounded-lg px-4 h-11 text-sm text-gray-700 outline-none focus:border-gray-400"
+                className="w-full border border-border rounded-lg px-4 h-11 text-sm text-foreground outline-none focus:border-ring"
               />
             </div>
             <div>
-              <label className="text-xs font-semibold text-gray-600 mb-1 block">Date</label>
+              <label className="text-xs font-semibold text-muted-foreground mb-1 block">Date</label>
               <input
                 type="date"
                 required
                 value={form.moveInDate}
                 onChange={(e) => setForm({ ...form, moveInDate: e.target.value })}
-                className="w-full border border-gray-200 rounded-lg px-4 h-11 text-sm text-gray-700 outline-none focus:border-gray-400"
+                className="w-full border border-border rounded-lg px-4 h-11 text-sm text-foreground outline-none focus:border-ring"
               />
             </div>
           </div>
 
           {/* Additional Notes */}
           <div>
-            <label className="text-xs font-semibold text-gray-600 mb-1 block">Additional Notes</label>
+            <label className="text-xs font-semibold text-muted-foreground mb-1 block">Additional Notes</label>
             <textarea
               placeholder="Any special requirements..."
               rows={3}
               value={form.additionalNotes}
               onChange={(e) => setForm({ ...form, additionalNotes: e.target.value })}
-              className="w-full border border-gray-200 rounded-lg px-4 py-3 text-sm text-gray-700 outline-none resize-none focus:border-gray-400"
+              className="w-full border border-border rounded-lg px-4 py-3 text-sm text-foreground outline-none resize-none focus:border-ring"
             />
           </div>
 
@@ -124,7 +124,7 @@ export default function BookingModal({ property, onClose }) {
             <button
               type="button"
               onClick={onClose}
-              className="px-6 py-2.5 border border-gray-200 text-sm text-gray-600 rounded-lg hover:bg-gray-50 transition"
+              className="px-6 py-2.5 border border-border text-sm text-muted-foreground rounded-lg hover:bg-muted transition"
             >
               Cancel
             </button>

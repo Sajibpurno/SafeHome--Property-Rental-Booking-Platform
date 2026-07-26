@@ -37,10 +37,10 @@ export default function BookingBox({ property }) {
 
   return (
     <>
-      <div className="border border-gray-200 rounded-xl p-5 sticky top-6 flex flex-col gap-4">
+      <div className="border border-border rounded-xl p-5 sticky top-6 flex flex-col gap-4">
         <p className="text-lg font-bold text-blue-600">
           ৳{Number(property.rent).toLocaleString()}
-          <span className="text-sm font-normal text-gray-400 ml-1">/ {property.rentType}</span>
+          <span className="text-sm font-normal text-muted-foreground ml-1">/ {property.rentType}</span>
         </p>
 
         <button
@@ -56,14 +56,14 @@ export default function BookingBox({ property }) {
           className={`w-full border text-sm py-3 rounded-lg transition font-medium
             ${favAdded
               ? "border-green-300 text-green-600 bg-green-50"
-              : "border-gray-200 text-gray-600 hover:bg-gray-50"}`}
+              : "border-border text-muted-foreground hover:bg-muted"}`}
         >
           {favAdded ? "✔ Added to Favorites" : favLoading ? "Adding..." : "Add to Favorites"}
         </button>
 
         <div className="flex flex-col gap-2 mt-1">
           {["Verified Property", "Secure Payment", "Instant Booking"].map((item) => (
-            <div key={item} className="flex items-center gap-2 text-sm text-gray-500">
+            <div key={item} className="flex items-center gap-2 text-sm text-muted-foreground">
               <span className="text-green-500">✔</span>
               {item}
             </div>

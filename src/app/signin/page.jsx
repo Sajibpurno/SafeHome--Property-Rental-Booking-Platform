@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { generateToken } from "@/lib/api/auth";
 import { Eye, EyeOff } from "lucide-react";
 import { authClient } from "@/lib/auth-client";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -37,6 +38,14 @@ const SignInForm = () => {
       if (error) {
         setStatus({ type: "error", message: error.message || "Authentication failed." });
       } else {
+        // Token generate
+        const session = await authClient.getSession();
+        if (session?.data?.user) {
+          await generateToken({
+            email: session.data.user.email,
+            role: session.data.user.role,
+          });
+        }
         setStatus({ type: "success", message: "Logged in successfully! Redirecting..." });
         e.target.reset();
         router.push(redirectTo);
@@ -48,15 +57,17 @@ const SignInForm = () => {
     }
   };
 
-  const handleGoogleLogin =async () => {
-      await authClient.signIn.social({
-      provider: "google",
-      callbackURL: '/',
-      });
-    }
+  const handleGoogleLogin = async () => {
+  await authClient.signIn.social({
+    provider: "google",
+    callbackURL: '/',
+  });
+  // Google login এ callbackURL এ redirect হয়
+  // তাই layout এ session check করে token generate করবো
+};
 
   return (
-    <section className="w-full min-h-screen bg-[#f8f9fa] flex items-center justify-center px-4 py-12 font-sans relative">
+    <section className="w-full min-h-screen bg-muted flex items-center justify-center px-4 py-12 font-sans relative">
 
       {/* Alert Messages */}
       {status.type && (
@@ -71,14 +82,14 @@ const SignInForm = () => {
       )}
 
       {/* Form Card */}
-      <div className="w-full max-w-[420px] bg-white rounded-2xl p-8 shadow-[0_8px_30px_rgb(0,0,0,0.08)] border border-gray-100 space-y-6">
+      <div className="w-full max-w-[420px] bg-card rounded-2xl p-8 shadow-[0_8px_30px_rgb(0,0,0,0.08)] border border-border space-y-6">
 
         {/* Header */}
         <div className="text-center space-y-2">
-          <h1 className="text-3xl font-bold text-black flex justify-center items-center gap-2">
+          <h1 className="text-3xl font-bold text-foreground flex justify-center items-center gap-2">
             Welcome Back 👋
           </h1>
-          <p className="text-sm text-gray-500">Sign in to your account</p>
+          <p className="text-sm text-muted-foreground">Sign in to your account</p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-4">
@@ -90,7 +101,7 @@ const SignInForm = () => {
               name="email"
               disabled={isLoading}
               placeholder="Email"
-              className="w-full h-12 rounded-xl bg-white border border-gray-200 px-4 text-sm text-gray-900 placeholder-gray-500 focus:outline-none focus:border-gray-400 focus:ring-1 focus:ring-gray-400 transition-all disabled:opacity-50"
+              className="w-full h-12 rounded-xl bg-card border border-border px-4 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-ring focus:ring-1 focus:ring-ring transition-all disabled:opacity-50"
             />
           </div>
 
@@ -102,15 +113,15 @@ const SignInForm = () => {
                 name="password"
                 disabled={isLoading}
                 placeholder="Password"
-                className="w-full h-12 rounded-xl bg-white border border-gray-200 pl-4 pr-12 text-sm text-gray-900 placeholder-gray-500 focus:outline-none focus:border-gray-400 focus:ring-1 focus:ring-gray-400 transition-all disabled:opacity-50"
+                className="w-full h-12 rounded-xl bg-card border border-border pl-4 pr-12 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-ring focus:ring-1 focus:ring-ring transition-all disabled:opacity-50"
               />
-              <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute inset-y-0 right-0 pr-4 flex items-center text-gray-400 hover:text-gray-600 transition-colors">
+              <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute inset-y-0 right-0 pr-4 flex items-center text-muted-foreground hover:text-muted-foreground transition-colors">
                 {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
               </button>
             </div>
             {/* Forgot Password Link */}
             <div className="flex justify-end mt-2">
-              <Link href="/forgot-password" className="text-xs text-gray-500 hover:text-black transition-colors">
+              <Link href="/forgot-password" className="text-xs text-muted-foreground hover:text-foreground transition-colors">
                 Forgot password?
               </Link>
             </div>
@@ -128,16 +139,16 @@ const SignInForm = () => {
 
         {/* Divider */}
         <div className="relative flex items-center py-2">
-          <div className="flex-grow border-t border-gray-200"></div>
-          <span className="flex-shrink-0 mx-4 text-gray-400 text-xs uppercase tracking-wider">OR</span>
-          <div className="flex-grow border-t border-gray-200"></div>
+          <div className="flex-grow border-t border-border"></div>
+          <span className="flex-shrink-0 mx-4 text-muted-foreground text-xs uppercase tracking-wider">OR</span>
+          <div className="flex-grow border-t border-border"></div>
         </div>
 
         {/* Google Button */}
         <button onClick={handleGoogleLogin}
           type="button"
           disabled={isLoading}
-          className="w-full h-12 rounded-xl bg-white border border-gray-200 text-black font-semibold text-sm hover:bg-gray-50 active:scale-[0.99] transition-all disabled:opacity-50 flex items-center justify-center gap-3"
+          className="w-full h-12 rounded-xl bg-card border border-border text-foreground font-semibold text-sm hover:bg-muted active:scale-[0.99] transition-all disabled:opacity-50 flex items-center justify-center gap-3"
         >
           <svg className="w-5 h-5" viewBox="0 0 24 24">
             <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
@@ -149,7 +160,7 @@ const SignInForm = () => {
         </button>
 
         {/* Footer Link */}
-        <div className="text-center text-sm text-gray-700">
+        <div className="text-center text-sm text-foreground">
           Don&apos;t have an account?{" "}
           <Link href={`/resister?redirect=${redirectTo}`} className="text-[#0066FF] hover:underline transition-all">
             Register

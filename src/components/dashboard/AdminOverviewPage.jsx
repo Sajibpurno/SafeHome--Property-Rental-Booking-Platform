@@ -42,7 +42,7 @@ const AdminOverviewPage = () => {
     });
   }, []);
 
-  if (loading) return <p className="text-gray-400 text-sm">Loading...</p>;
+  if (loading) return <p className="text-muted-foreground text-sm">Loading...</p>;
 
   return (
     <div className="flex flex-col gap-6">
@@ -55,10 +55,10 @@ const AdminOverviewPage = () => {
           { label: "Total Properties", value: stats.totalProperties, icon: Home, color: "text-orange-500 bg-orange-50" },
           { label: "Total Bookings", value: stats.totalBookings, icon: CalendarDays, color: "text-purple-500 bg-purple-50" },
         ].map((stat) => (
-          <div key={stat.label} className="bg-white border border-gray-200 rounded-xl p-5 flex items-center justify-between">
+          <div key={stat.label} className="bg-card border border-border rounded-xl p-5 flex items-center justify-between">
             <div>
-              <p className="text-sm text-gray-500 mb-1">{stat.label}</p>
-              <p className="text-3xl font-bold text-gray-900">{stat.value}</p>
+              <p className="text-sm text-muted-foreground mb-1">{stat.label}</p>
+              <p className="text-3xl font-bold text-foreground">{stat.value}</p>
             </div>
             <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${stat.color}`}>
               <stat.icon size={22} />
@@ -68,8 +68,8 @@ const AdminOverviewPage = () => {
       </div>
 
       {/* Monthly Earnings Chart */}
-      <div className="bg-white border border-gray-200 rounded-xl p-6">
-        <h3 className="text-base font-bold text-gray-900 mb-6">Monthly Earnings</h3>
+      <div className="bg-card border border-border rounded-xl p-6">
+        <h3 className="text-base font-bold text-foreground mb-6">Monthly Earnings</h3>
         <ResponsiveContainer width="100%" height={300}>
           <BarChart data={monthlyData} barSize={60}>
             <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" vertical={false} />

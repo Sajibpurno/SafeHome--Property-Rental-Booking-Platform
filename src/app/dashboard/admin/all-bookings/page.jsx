@@ -14,30 +14,30 @@ const AllBookingsPage = () => {
       .finally(() => setLoading(false));
   }, []);
 
-  if (loading) return <p className="text-gray-400 text-sm">Loading...</p>;
+  if (loading) return <p className="text-muted-foreground text-sm">Loading...</p>;
 
   return (
     <div>
-      <h2 className="text-2xl font-bold text-gray-900 mb-6">All Bookings</h2>
+      <h2 className="text-2xl font-bold text-foreground mb-6">All Bookings</h2>
 
       {bookings.length === 0 ? (
-        <div className="text-center py-20 text-gray-400 text-sm">No bookings found.</div>
+        <div className="text-center py-20 text-muted-foreground text-sm">No bookings found.</div>
       ) : (
-        <div className="overflow-x-auto rounded-xl border border-gray-200">
+        <div className="overflow-x-auto rounded-xl border border-border">
           <table className="w-full text-sm">
-            <thead className="bg-gray-50 border-b border-gray-200">
+            <thead className="bg-muted border-b border-border">
               <tr>
-                <th className="text-left px-5 py-3 text-xs font-semibold text-gray-500">Property</th>
-                <th className="text-left px-5 py-3 text-xs font-semibold text-gray-500">Tenant</th>
-                <th className="text-left px-5 py-3 text-xs font-semibold text-gray-500">Move-in Date</th>
-                <th className="text-left px-5 py-3 text-xs font-semibold text-gray-500">Amount</th>
-                <th className="text-left px-5 py-3 text-xs font-semibold text-gray-500">Booking Status</th>
-                <th className="text-left px-5 py-3 text-xs font-semibold text-gray-500">Payment</th>
+                <th className="text-left px-5 py-3 text-xs font-semibold text-muted-foreground">Property</th>
+                <th className="text-left px-5 py-3 text-xs font-semibold text-muted-foreground">Tenant</th>
+                <th className="text-left px-5 py-3 text-xs font-semibold text-muted-foreground">Move-in Date</th>
+                <th className="text-left px-5 py-3 text-xs font-semibold text-muted-foreground">Amount</th>
+                <th className="text-left px-5 py-3 text-xs font-semibold text-muted-foreground">Booking Status</th>
+                <th className="text-left px-5 py-3 text-xs font-semibold text-muted-foreground">Payment</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-100">
               {bookings.map((booking) => (
-                <tr key={booking._id} className="hover:bg-gray-50 transition">
+                <tr key={booking._id} className="hover:bg-muted transition">
                   <td className="px-5 py-4">
                     <div className="flex items-center gap-3">
                       <img
@@ -45,19 +45,19 @@ const AllBookingsPage = () => {
                         alt={booking.propertyTitle}
                         className="w-12 h-10 rounded-lg object-cover flex-shrink-0"
                       />
-                      <span className="font-medium text-gray-800 line-clamp-1">
+                      <span className="font-medium text-foreground line-clamp-1">
                         {booking.propertyTitle}
                       </span>
                     </div>
                   </td>
                   <td className="px-5 py-4">
-                    <p className="font-medium text-gray-800">{booking.tenantName}</p>
-                    <p className="text-xs text-gray-400">{booking.tenantEmail}</p>
+                    <p className="font-medium text-foreground">{booking.tenantName}</p>
+                    <p className="text-xs text-muted-foreground">{booking.tenantEmail}</p>
                   </td>
-                  <td className="px-5 py-4 text-gray-500">{booking.moveInDate || "—"}</td>
-                  <td className="px-5 py-4 font-semibold text-gray-800">
+                  <td className="px-5 py-4 text-muted-foreground">{booking.moveInDate || "—"}</td>
+                  <td className="px-5 py-4 font-semibold text-foreground">
                     ৳{Number(booking.rent).toLocaleString()}
-                    <span className="text-xs text-gray-400 font-normal ml-1">/{booking.rentType}</span>
+                    <span className="text-xs text-muted-foreground font-normal ml-1">/{booking.rentType}</span>
                   </td>
                   <td className="px-5 py-4">
                     <span className={`text-xs font-semibold px-3 py-1 rounded-full capitalize
@@ -70,7 +70,7 @@ const AllBookingsPage = () => {
                   <td className="px-5 py-4">
                     <span className={`text-xs font-semibold px-3 py-1 rounded-full capitalize
                       ${booking.paymentStatus === "paid" ? "bg-green-100 text-green-700" :
-                        "bg-gray-100 text-gray-500"}`}>
+                        "bg-surface-2 text-muted-foreground"}`}>
                       {booking.paymentStatus}
                     </span>
                   </td>
