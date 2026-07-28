@@ -2,6 +2,8 @@
 
 import React, { useState } from "react";
 import { authClient } from "@/lib/auth-client";
+import { X, Upload } from "lucide-react";
+import { getToken } from "@/lib/api/auth";
 
 const amenitiesList = ["WiFi", "Parking", "Air Conditioning", "Lift", "Security", "Generator", "Gym", "Swimming Pool"];
 
@@ -9,11 +11,48 @@ const AddPropertyForm = () => {
   const { data: session } = authClient.useSession();
   const [amenities, setAmenities] = useState([]);
   const [errors, setErrors] = useState({});
+  const [images, setImages] = useState([]);
+  const [uploading, setUploading] = useState(false);
 
   const toggleAmenity = (item) => {
     setAmenities((prev) =>
       prev.includes(item) ? prev.filter((a) => a !== item) : [...prev, item]
     );
+  };
+
+  const handleImageUpload = async (e) => {
+    const files = Array.from(e.target.files);
+    if (!files.length) return;
+    setUploading(true);
+
+    try {
+      const uploaded = await Promise.all(
+        files.map(async (file) => {
+          const formData = new FormData();
+          formData.append("image", file);
+          const res = await fetch(
+            `https://api.imgbb.com/1/upload?key=${process.env.NEXT_PUBLIC_IMGBB_API_KEY}`,
+            { method: "POST", body: formData }
+          );
+          const data = await res.json();
+          return {
+            url: data.data.url,
+            deleteUrl: data.data.delete_url,
+            preview: data.data.display_url,
+          };
+        })
+      );
+      setImages((prev) => [...prev, ...uploaded]);
+    } catch (err) {
+      console.error(err);
+      alert("Image upload failed. Try again.");
+    } finally {
+      setUploading(false);
+    }
+  };
+
+  const removeImage = (index) => {
+    setImages((prev) => prev.filter((_, i) => i !== index));
   };
 
   const handleSubmit = async (e) => {
@@ -30,7 +69,7 @@ const AddPropertyForm = () => {
     if (!data.size) newErrors.size = "Property size is required";
     if (!data.bedrooms) newErrors.bedrooms = "Bedrooms is required";
     if (!data.bathrooms) newErrors.bathrooms = "Bathrooms is required";
-    if (!data.imageUrl) newErrors.imageUrl = "Image URL is required";
+    if (images.length === 0) newErrors.images = "At least one image is required";
     if (!data.description) newErrors.description = "Description is required";
 
     if (Object.keys(newErrors).length > 0) {
@@ -43,6 +82,8 @@ const AddPropertyForm = () => {
     const payload = {
       ...data,
       amenities,
+      images: images.map((img) => img.url),
+      imageUrl: images[0]?.url,
       status: "pending",
       createdAt: new Date(),
       ownerEmail: session?.user?.email,
@@ -50,18 +91,26 @@ const AddPropertyForm = () => {
     };
 
     try {
+      const token = getToken();
+      console.log("token:", token);
+
       const res = await fetch("http://localhost:5000/properties", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
         body: JSON.stringify(payload),
       });
 
       const result = await res.json();
+      console.log("result:", result);
 
       if (result.insertedId) {
         alert("Property added successfully!");
         e.target.reset();
         setAmenities([]);
+        setImages([]);
       } else {
         alert("Something went wrong. Try again.");
       }
@@ -143,16 +192,64 @@ const AddPropertyForm = () => {
             </div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div>
-              <label className={labelClass}>Extra Features</label>
-              <input name="extraFeatures" placeholder="Balcony, Pet Friendly, Rooftop, CCTV" className={`${inputClass} border-border`} />
-            </div>
-            <div>
-              <label className={labelClass}>Image URL</label>
-              <input name="imageUrl" placeholder="Cloudinary / Imgbb URL" className={`${inputClass} ${errors.imageUrl ? "border-red-400" : "border-border"}`} />
-              {errors.imageUrl && <p className={errorClass}>{errors.imageUrl}</p>}
-            </div>
+          <div>
+            <label className={labelClass}>Extra Features</label>
+            <input name="extraFeatures" placeholder="Balcony, Pet Friendly, Rooftop, CCTV" className={`${inputClass} border-border`} />
+          </div>
+
+          {/* Image Upload */}
+          <div>
+            <label className={labelClass}>Property Images</label>
+            <label className={`flex flex-col items-center justify-center w-full h-36 border-2 border-dashed rounded-xl cursor-pointer transition
+              ${errors.images ? "border-red-400 bg-red-50" : "border-border hover:border-blue-400 hover:bg-blue-50/30"}`}>
+              <div className="flex flex-col items-center gap-2">
+                {uploading ? (
+                  <div className="w-6 h-6 border-2 border-blue-500 border-t-transparent rounded-full animate-spin" />
+                ) : (
+                  <>
+                    <Upload size={24} className="text-gray-400" />
+                    <p className="text-sm text-gray-500">Click to upload images</p>
+                    <p className="text-xs text-gray-400">PNG, JPG, WEBP (multiple allowed)</p>
+                  </>
+                )}
+              </div>
+              <input
+                type="file"
+                accept="image/*"
+                multiple
+                onChange={handleImageUpload}
+                className="hidden"
+                disabled={uploading}
+              />
+            </label>
+            {errors.images && <p className={errorClass}>{errors.images}</p>}
+
+            {/* Previews */}
+            {images.length > 0 && (
+              <div className="grid grid-cols-3 md:grid-cols-5 gap-3 mt-4">
+                {images.map((img, index) => (
+                  <div key={index} className="relative group">
+                    <img
+                      src={img.preview}
+                      alt={`upload-${index}`}
+                      className="w-full h-20 object-cover rounded-lg border border-border"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => removeImage(index)}
+                      className="absolute -top-2 -right-2 w-5 h-5 bg-red-500 text-white rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition"
+                    >
+                      <X size={12} />
+                    </button>
+                    {index === 0 && (
+                      <span className="absolute bottom-1 left-1 text-[10px] bg-blue-600 text-white px-1.5 py-0.5 rounded">
+                        Main
+                      </span>
+                    )}
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
 
           <div>
@@ -184,7 +281,11 @@ const AddPropertyForm = () => {
           </div>
 
           <div>
-            <button type="submit" className="bg-black text-white text-sm font-semibold px-8 py-3 rounded-lg hover:bg-gray-800 transition">
+            <button
+              type="submit"
+              disabled={uploading}
+              className="bg-black text-white text-sm font-semibold px-8 py-3 rounded-lg hover:bg-gray-800 transition disabled:opacity-50"
+            >
               Add Property
             </button>
           </div>

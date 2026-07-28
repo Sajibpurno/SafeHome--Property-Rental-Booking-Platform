@@ -14,7 +14,7 @@ const OwnerMyProperties = () => {
   useEffect(() => {
     if (!session?.user?.email) return;
     getPropertiesByOwner(session.user.email)
-      .then(setProperties)
+      .then((data) => setProperties(Array.isArray(data) ? data : []))
       .catch(console.error)
       .finally(() => setLoading(false));
   }, [session]);

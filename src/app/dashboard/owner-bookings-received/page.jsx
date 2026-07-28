@@ -12,7 +12,7 @@ const BookingRequestsPage = () => {
   useEffect(() => {
     if (!session?.user?.email) return;
     getBookingsByOwner(session.user.email)
-      .then(setBookings)
+      .then((data) => setBookings(Array.isArray(data) ? data : []))
       .catch(console.error)
       .finally(() => setLoading(false));
   }, [session]);
