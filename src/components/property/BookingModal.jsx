@@ -5,7 +5,7 @@ import { createBooking } from "@/lib/api/bookings";
 import { authClient } from "@/lib/auth-client";
 import { toast } from "@heroui/react";
 
-export default function BookingModal({ property, onClose }) {
+export default function BookingModal({ property, onClose, onPayment }) {
   const { data: session } = authClient.useSession();
   const [loading, setLoading] = useState(false);
   const [form, setForm] = useState({
@@ -36,8 +36,10 @@ export default function BookingModal({ property, onClose }) {
     try {
       const res = await createBooking(payload);
       if (res.insertedId) {
-        toast.success("Booking successful!");
+        toast.success("Booking created! Proceed to payment.");
         onClose();
+        // booking id সহ payment modal open করো
+        onPayment({ ...payload, _id: res.insertedId });
       } else {
         toast.error("Something went wrong.");
       }
@@ -48,11 +50,10 @@ export default function BookingModal({ property, onClose }) {
       setLoading(false);
     }
   };
+
   return (
     <div className="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 flex items-center justify-center px-4">
       <div className="bg-card rounded-2xl p-8 w-full max-w-lg shadow-2xl">
-
-        {/* Header */}
         <div className="text-center mb-6">
           <h2 className="text-xl font-bold text-foreground">Booking Properties</h2>
           <p className="text-sm text-muted-foreground mt-1">
@@ -61,8 +62,6 @@ export default function BookingModal({ property, onClose }) {
         </div>
 
         <form onSubmit={handleBook} className="flex flex-col gap-4">
-
-          {/* Row 1: Name + Email */}
           <div className="grid grid-cols-2 gap-4">
             <div>
               <label className="text-xs font-semibold text-muted-foreground mb-1 block">User Name</label>
@@ -82,7 +81,6 @@ export default function BookingModal({ property, onClose }) {
             </div>
           </div>
 
-          {/* Row 2: Phone + Date */}
           <div className="grid grid-cols-2 gap-4">
             <div>
               <label className="text-xs font-semibold text-muted-foreground mb-1 block">Phone</label>
@@ -107,7 +105,6 @@ export default function BookingModal({ property, onClose }) {
             </div>
           </div>
 
-          {/* Additional Notes */}
           <div>
             <label className="text-xs font-semibold text-muted-foreground mb-1 block">Additional Notes</label>
             <textarea
@@ -119,7 +116,6 @@ export default function BookingModal({ property, onClose }) {
             />
           </div>
 
-          {/* Buttons */}
           <div className="flex justify-end gap-3 pt-2">
             <button
               type="button"
@@ -136,7 +132,6 @@ export default function BookingModal({ property, onClose }) {
               {loading ? "Booking..." : "Confirm Booking"}
             </button>
           </div>
-
         </form>
       </div>
     </div>

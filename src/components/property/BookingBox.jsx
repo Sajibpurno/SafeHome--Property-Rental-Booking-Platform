@@ -2,14 +2,22 @@
 
 import { useState } from "react";
 import BookingModal from "./BookingModal";
+import PaymentModal from "./PaymentModal";
 import { addFavorite } from "@/lib/api/favorites";
 import { authClient } from "@/lib/auth-client";
 
 export default function BookingBox({ property }) {
   const { data: session } = authClient.useSession();
   const [showModal, setShowModal] = useState(false);
+  const [showPayment, setShowPayment] = useState(false);
+  const [currentBooking, setCurrentBooking] = useState(null);
   const [favLoading, setFavLoading] = useState(false);
   const [favAdded, setFavAdded] = useState(false);
+
+  const handlePayment = (booking) => {
+    setCurrentBooking(booking);
+    setShowPayment(true);
+  };
 
   const handleFavorite = async () => {
     if (!session) return alert("Please login first!");
@@ -25,9 +33,7 @@ export default function BookingBox({ property }) {
         tenantEmail: session.user.email,
       };
       const res = await addFavorite(payload);
-      if (res.insertedId) {
-        setFavAdded(true);
-      }
+      if (res.insertedId) setFavAdded(true);
     } catch (err) {
       console.error(err);
     } finally {
@@ -72,7 +78,18 @@ export default function BookingBox({ property }) {
       </div>
 
       {showModal && (
-        <BookingModal property={property} onClose={() => setShowModal(false)} />
+        <BookingModal
+          property={property}
+          onClose={() => setShowModal(false)}
+          onPayment={handlePayment}
+        />
+      )}
+
+      {showPayment && currentBooking && (
+        <PaymentModal
+          booking={currentBooking}
+          onClose={() => setShowPayment(false)}
+        />
       )}
     </>
   );
