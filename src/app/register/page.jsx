@@ -11,8 +11,6 @@ const SignUpForm = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [status, setStatus] = useState({ type: null, message: "" });
   const [isLoading, setIsLoading] = useState(false);
-  
-  // 👑 ডিফল্ট রোল Tenant সিলেক্ট থাকবে
   const [role, setRole] = useState("Tenant");
 
   const searchParams = useSearchParams();
@@ -42,7 +40,7 @@ const SignUpForm = () => {
         password: user.password,
         name: user.name,
         image: user.userImg || undefined,
-        role: role, // এখানে "Tenant" অথবা "Owner" পাস হবে
+        role: role,
       });
 
       if (error) {
@@ -59,17 +57,15 @@ const SignUpForm = () => {
     }
   };
 
-  const handleGoogleLogin =async () => {
-      await authClient.signIn.social({
+  const handleGoogleLogin = async () => {
+    await authClient.signIn.social({
       provider: "google",
       callbackURL: '/',
-      });
-    }
+    });
+  };
 
   return (
     <section className="w-full min-h-screen bg-muted flex items-center justify-center px-4 py-12 font-sans relative">
-
-      {/* Alert Messages */}
       {status.type && (
         <div className={`absolute top-6 right-6 z-50 flex items-center gap-3 px-4 py-3 rounded-xl border max-w-sm animate-in fade-in duration-300 ${
           status.type === "success"
@@ -81,10 +77,7 @@ const SignUpForm = () => {
         </div>
       )}
 
-      {/* Form Card */}
       <div className="w-full max-w-[420px] bg-card rounded-2xl p-8 shadow-[0_8px_30px_rgb(0,0,0,0.08)] border border-border space-y-6">
-
-        {/* Header */}
         <div className="text-center space-y-2">
           <h1 className="text-3xl font-bold text-foreground flex justify-center items-center gap-2">
             Create Account 🚀
@@ -93,129 +86,58 @@ const SignUpForm = () => {
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-4">
-          
-          {/* Full Name */}
-          <div>
-            <input
-              type="text"
-              name="name"
-              disabled={isLoading}
-              placeholder="Full Name"
-              className="w-full h-12 rounded-xl bg-card border border-border px-4 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-ring focus:ring-1 focus:ring-ring transition-all disabled:opacity-50"
-            />
-          </div>
+          <input type="text" name="name" disabled={isLoading} placeholder="Full Name"
+            className="w-full h-12 rounded-xl bg-card border border-border px-4 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-ring focus:ring-1 focus:ring-ring transition-all disabled:opacity-50" />
 
-          {/* Email */}
-          <div>
-            <input
-              type="email"
-              name="email"
-              disabled={isLoading}
-              placeholder="Email"
-              className="w-full h-12 rounded-xl bg-card border border-border px-4 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-ring focus:ring-1 focus:ring-ring transition-all disabled:opacity-50"
-            />
-          </div>
+          <input type="email" name="email" disabled={isLoading} placeholder="Email"
+            className="w-full h-12 rounded-xl bg-card border border-border px-4 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-ring focus:ring-1 focus:ring-ring transition-all disabled:opacity-50" />
 
-          {/* Photo URL */}
-          <div>
-            <input
-              type="text"
-              name="userImg"
-              disabled={isLoading}
-              placeholder="Photo URL (Direct or ImgBB link)"
-              className="w-full h-12 rounded-xl bg-card border border-border px-4 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-ring focus:ring-1 focus:ring-ring transition-all disabled:opacity-50"
-            />
-          </div>
+          <input type="text" name="userImg" disabled={isLoading} placeholder="Photo URL (Direct or ImgBB link)"
+            className="w-full h-12 rounded-xl bg-card border border-border px-4 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-ring focus:ring-1 focus:ring-ring transition-all disabled:opacity-50" />
 
-          {/* Password */}
           <div className="relative w-full">
-            <input
-              type={showPassword ? "text" : "password"}
-              name="password"
-              disabled={isLoading}
-              placeholder="Password"
-              className="w-full h-12 rounded-xl bg-card border border-border pl-4 pr-12 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-ring focus:ring-1 focus:ring-ring transition-all disabled:opacity-50"
-            />
-            <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute inset-y-0 right-0 pr-4 flex items-center text-muted-foreground hover:text-muted-foreground transition-colors">
+            <input type={showPassword ? "text" : "password"} name="password" disabled={isLoading} placeholder="Password"
+              className="w-full h-12 rounded-xl bg-card border border-border pl-4 pr-12 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-ring focus:ring-1 focus:ring-ring transition-all disabled:opacity-50" />
+            <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute inset-y-0 right-0 pr-4 flex items-center text-muted-foreground">
               {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
             </button>
           </div>
 
-          {/* 🎯 কাস্টম টেইলউইন্ড রেডিও বাটন (পাশাপাশি থাকবে এবং সিলেক্টেড ডট দেখাবে) */}
           <div className="flex flex-col gap-2 pt-2">
             <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Register As</label>
             <div className="flex items-center gap-6 mt-1">
-              
-              {/* Tenant (Renter) Option */}
-              <label className="flex items-center gap-2.5 cursor-pointer group">
-                <div className="relative flex items-center justify-center">
-                  <input
-                    type="radio"
-                    name="role"
-                    value="Tenant"
-                    checked={role === "Tenant"}
-                    onChange={() => setRole("Tenant")}
-                    className="sr-only" // ডিফল্ট ব্রাউজার রেডিও হাইড করার জন্য
-                  />
-                  {/* বাইরের গোল বৃত্ত */}
-                  <div className={`w-5 h-5 rounded-full border flex items-center justify-center transition-all ${
-                    role === "Tenant" ? "border-black bg-black" : "border-border bg-card group-hover:border-muted-foreground"
-                  }`}>
-                    {/* ভেতরের সাদা ডট (সিলেক্ট হলে দেখাবে) */}
-                    {role === "Tenant" && <div className="w-2 h-2 rounded-full bg-card" />}
+              {["Tenant", "Owner"].map((r) => (
+                <label key={r} className="flex items-center gap-2.5 cursor-pointer group">
+                  <div className="relative flex items-center justify-center">
+                    <input type="radio" name="role" value={r} checked={role === r} onChange={() => setRole(r)} className="sr-only" />
+                    <div className={`w-5 h-5 rounded-full border flex items-center justify-center transition-all ${
+                      role === r ? "border-black bg-black" : "border-border bg-card group-hover:border-muted-foreground"
+                    }`}>
+                      {role === r && <div className="w-2 h-2 rounded-full bg-card" />}
+                    </div>
                   </div>
-                </div>
-                <span className="text-sm text-foreground font-medium select-none">Tenant (Renter)</span>
-              </label>
-
-              {/* Property Owner Option */}
-              <label className="flex items-center gap-2.5 cursor-pointer group">
-                <div className="relative flex items-center justify-center">
-                  <input
-                    type="radio"
-                    name="role"
-                    value="Owner"
-                    checked={role === "Owner"}
-                    onChange={() => setRole("Owner")}
-                    className="sr-only"
-                  />
-                  {/* বাইরের গোল বৃত্ত */}
-                  <div className={`w-5 h-5 rounded-full border flex items-center justify-center transition-all ${
-                    role === "Owner" ? "border-black bg-black" : "border-border bg-card group-hover:border-muted-foreground"
-                  }`}>
-                    {/* ভেতরের সাদা ডট (সিলেক্ট হলে দেখাবে) */}
-                    {role === "Owner" && <div className="w-2 h-2 rounded-full bg-card" />}
-                  </div>
-                </div>
-                <span className="text-sm text-foreground font-medium select-none">Property Owner</span>
-              </label>
-
+                  <span className="text-sm text-foreground font-medium select-none">
+                    {r === "Tenant" ? "Tenant (Renter)" : "Property Owner"}
+                  </span>
+                </label>
+              ))}
             </div>
           </div>
 
-          {/* Register Button */}
-          <button
-            type="submit"
-            disabled={isLoading}
-            className="w-full h-12 rounded-xl bg-[#111111] text-white font-medium text-base hover:bg-black active:scale-[0.99] transition-all mt-4 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
-          >
+          <button type="submit" disabled={isLoading}
+            className="w-full h-12 rounded-xl bg-[#111111] text-white font-medium text-base hover:bg-black active:scale-[0.99] transition-all mt-4 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center">
             {isLoading ? "Registering..." : "Register"}
           </button>
         </form>
 
-        {/* Divider */}
         <div className="relative flex items-center py-1">
           <div className="flex-grow border-t border-border"></div>
           <span className="flex-shrink-0 mx-4 text-muted-foreground text-xs uppercase tracking-wider">OR</span>
           <div className="flex-grow border-t border-border"></div>
         </div>
 
-        {/* Google Button */}
-        <button onClick={handleGoogleLogin}
-          type="button"
-          disabled={isLoading}
-          className="w-full h-12 rounded-xl bg-card border border-border text-foreground font-semibold text-sm hover:bg-muted active:scale-[0.99] transition-all disabled:opacity-50 flex items-center justify-center gap-3"
-        >
+        <button onClick={handleGoogleLogin} type="button" disabled={isLoading}
+          className="w-full h-12 rounded-xl bg-card border border-border text-foreground font-semibold text-sm hover:bg-muted active:scale-[0.99] transition-all disabled:opacity-50 flex items-center justify-center gap-3">
           <svg className="w-5 h-5" viewBox="0 0 24 24">
             <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
             <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" />
@@ -225,14 +147,10 @@ const SignUpForm = () => {
           Continue with Google
         </button>
 
-        {/* Footer Link */}
         <div className="text-center text-sm text-foreground">
           Already have an account?{" "}
-          <Link href={`/signin?redirect=${redirectTo}`} className="text-[#0066FF] hover:underline transition-all">
-            Login
-          </Link>
+          <Link href={`/signin?redirect=${redirectTo}`} className="text-[#0066FF] hover:underline transition-all">Login</Link>
         </div>
-
       </div>
     </section>
   );

@@ -38,7 +38,6 @@ const SignInForm = () => {
       if (error) {
         setStatus({ type: "error", message: error.message || "Authentication failed." });
       } else {
-        // Token generate
         const session = await authClient.getSession();
         if (session?.data?.user) {
           await generateToken({
@@ -58,18 +57,14 @@ const SignInForm = () => {
   };
 
   const handleGoogleLogin = async () => {
-  await authClient.signIn.social({
-    provider: "google",
-    callbackURL: '/',
-  });
-  // Google login এ callbackURL এ redirect হয়
-  // তাই layout এ session check করে token generate করবো
-};
+    await authClient.signIn.social({
+      provider: "google",
+      callbackURL: '/',
+    });
+  };
 
   return (
     <section className="w-full min-h-screen bg-muted flex items-center justify-center px-4 py-12 font-sans relative">
-
-      {/* Alert Messages */}
       {status.type && (
         <div className={`absolute top-6 right-6 z-50 flex items-center gap-3 px-4 py-3 rounded-xl border max-w-sm animate-in fade-in duration-300 ${
           status.type === "success"
@@ -81,10 +76,7 @@ const SignInForm = () => {
         </div>
       )}
 
-      {/* Form Card */}
       <div className="w-full max-w-[420px] bg-card rounded-2xl p-8 shadow-[0_8px_30px_rgb(0,0,0,0.08)] border border-border space-y-6">
-
-        {/* Header */}
         <div className="text-center space-y-2">
           <h1 className="text-3xl font-bold text-foreground flex justify-center items-center gap-2">
             Welcome Back 👋
@@ -93,63 +85,36 @@ const SignInForm = () => {
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-4">
-          
-          {/* Email */}
-          <div>
-            <input
-              type="email"
-              name="email"
-              disabled={isLoading}
-              placeholder="Email"
-              className="w-full h-12 rounded-xl bg-card border border-border px-4 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-ring focus:ring-1 focus:ring-ring transition-all disabled:opacity-50"
-            />
-          </div>
+          <input type="email" name="email" disabled={isLoading} placeholder="Email"
+            className="w-full h-12 rounded-xl bg-card border border-border px-4 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-ring focus:ring-1 focus:ring-ring transition-all disabled:opacity-50" />
 
-          {/* Password */}
           <div>
             <div className="relative w-full">
-              <input
-                type={showPassword ? "text" : "password"}
-                name="password"
-                disabled={isLoading}
-                placeholder="Password"
-                className="w-full h-12 rounded-xl bg-card border border-border pl-4 pr-12 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-ring focus:ring-1 focus:ring-ring transition-all disabled:opacity-50"
-              />
-              <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute inset-y-0 right-0 pr-4 flex items-center text-muted-foreground hover:text-muted-foreground transition-colors">
+              <input type={showPassword ? "text" : "password"} name="password" disabled={isLoading} placeholder="Password"
+                className="w-full h-12 rounded-xl bg-card border border-border pl-4 pr-12 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-ring focus:ring-1 focus:ring-ring transition-all disabled:opacity-50" />
+              <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute inset-y-0 right-0 pr-4 flex items-center text-muted-foreground">
                 {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
               </button>
             </div>
-            {/* Forgot Password Link */}
             <div className="flex justify-end mt-2">
-              <Link href="/forgot-password" className="text-xs text-muted-foreground hover:text-foreground transition-colors">
-                Forgot password?
-              </Link>
+              <Link href="/forgot-password" className="text-xs text-muted-foreground hover:text-foreground transition-colors">Forgot password?</Link>
             </div>
           </div>
 
-          {/* Login Button */}
-          <button
-            type="submit"
-            disabled={isLoading}
-            className="w-full h-12 rounded-xl bg-[#111111] text-white font-medium text-base hover:bg-black active:scale-[0.99] transition-all mt-2 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
-          >
+          <button type="submit" disabled={isLoading}
+            className="w-full h-12 rounded-xl bg-[#111111] text-white font-medium text-base hover:bg-black active:scale-[0.99] transition-all mt-2 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center">
             {isLoading ? "Signing In..." : "Login"}
           </button>
         </form>
 
-        {/* Divider */}
         <div className="relative flex items-center py-2">
           <div className="flex-grow border-t border-border"></div>
           <span className="flex-shrink-0 mx-4 text-muted-foreground text-xs uppercase tracking-wider">OR</span>
           <div className="flex-grow border-t border-border"></div>
         </div>
 
-        {/* Google Button */}
-        <button onClick={handleGoogleLogin}
-          type="button"
-          disabled={isLoading}
-          className="w-full h-12 rounded-xl bg-card border border-border text-foreground font-semibold text-sm hover:bg-muted active:scale-[0.99] transition-all disabled:opacity-50 flex items-center justify-center gap-3"
-        >
+        <button onClick={handleGoogleLogin} type="button" disabled={isLoading}
+          className="w-full h-12 rounded-xl bg-card border border-border text-foreground font-semibold text-sm hover:bg-muted active:scale-[0.99] transition-all disabled:opacity-50 flex items-center justify-center gap-3">
           <svg className="w-5 h-5" viewBox="0 0 24 24">
             <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
             <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" />
@@ -159,14 +124,10 @@ const SignInForm = () => {
           Continue with Google
         </button>
 
-        {/* Footer Link */}
         <div className="text-center text-sm text-foreground">
           Don&apos;t have an account?{" "}
-          <Link href={`/resister?redirect=${redirectTo}`} className="text-[#0066FF] hover:underline transition-all">
-            Register
-          </Link>
+          <Link href={`/register?redirect=${redirectTo}`} className="text-[#0066FF] hover:underline transition-all">Register</Link>
         </div>
-
       </div>
     </section>
   );
