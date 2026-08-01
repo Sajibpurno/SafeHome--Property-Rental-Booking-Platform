@@ -20,7 +20,9 @@ export default function CheckoutForm({ booking, onSuccess }) {
 
     try {
       // Create payment intent
-      const res = await fetch("http://localhost:5000/create-payment-intent", {
+      const BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+
+      const res = await fetch(`${BASE_URL}/create-payment-intent`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

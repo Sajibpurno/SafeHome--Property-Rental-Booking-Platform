@@ -9,20 +9,36 @@ import { useRouter } from "next/navigation";
 export default function PaymentModal({ booking, onClose }) {
   const router = useRouter();
 
-  // এখানে রাখো — component এর ভেতরে না, কিন্তু lazy load করো
+
   const stripePromise = loadStripe(
     process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY
   );
 
   const handleSuccess = async (transactionId) => {
-    try {
-      await updateBookingStatus(booking._id, "approved");
-      onClose();
-      router.push("/dashboard/bookings");
-    } catch (err) {
-      console.error(err);
-    }
-  };
+  try {
+    // booking status + payment status update
+    await updateBookingStatus(booking._id, "approved");
+    
+    // payment status paid করো
+    await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/bookings/${booking._id}`, {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${getToken()}`,
+      },
+      body: JSON.stringify({ 
+        paymentStatus: 'paid',
+        transactionId,
+      }),
+    });
+
+    toast.success("Payment successful! Booking confirmed.");
+    onClose();
+    router.push("/dashboard/bookings");
+  } catch (err) {
+    console.error(err);
+  }
+};
 
   return (
     <div className="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 flex items-center justify-center px-4">

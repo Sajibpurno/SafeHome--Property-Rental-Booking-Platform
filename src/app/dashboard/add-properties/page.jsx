@@ -94,7 +94,9 @@ const AddPropertyForm = () => {
       const token = getToken();
       console.log("token:", token);
 
-      const res = await fetch("http://localhost:5000/properties", {
+      const BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+
+      const res = await fetch(`${BASE_URL}/properties`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
