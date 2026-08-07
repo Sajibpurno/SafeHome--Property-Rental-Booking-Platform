@@ -5,16 +5,23 @@ import { authClient } from "@/lib/auth-client";
 import { getPropertiesByOwner } from "@/lib/api/properties";
 import { Trash2, Pencil } from "lucide-react";
 import Link from "next/link";
+import EditPropertyModal from "@/components/property/EditPropertyModal";
 
 const OwnerMyProperties = () => {
   const { data: session } = authClient.useSession();
   const [properties, setProperties] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [editProperty, setEditProperty] = useState(null);
 
   useEffect(() => {
     if (!session?.user?.email) return;
     getPropertiesByOwner(session.user.email)
-      .then((data) => setProperties(Array.isArray(data) ? data : []))
+      .then((data) => {
+        const sorted = Array.isArray(data)
+          ? [...data].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+          : [];
+        setProperties(sorted);
+      })
       .catch(console.error)
       .finally(() => setLoading(false));
   }, [session]);
@@ -35,12 +42,12 @@ const OwnerMyProperties = () => {
 
   return (
     <div>
-      <div className="flex justify-between items-center">
-        <h2 className="text-2xl font-bold text-foreground mb-6">My Properties</h2>
+      <div className="flex justify-between items-center mb-6">
+        <h2 className="text-2xl font-bold text-foreground">My Properties</h2>
         <Link href="/dashboard/add-properties">
-        <button type="submit" className="bg-black text-white text-sm font-semibold px-6 py-2 rounded-lg hover:bg-gray-800 transition">
-              Add Property
-        </button>
+          <button className="bg-black text-white text-sm font-semibold px-6 py-2 rounded-lg hover:bg-gray-800 transition">
+            Add Property
+          </button>
         </Link>
       </div>
 
@@ -64,7 +71,6 @@ const OwnerMyProperties = () => {
             <tbody className="divide-y divide-gray-100">
               {properties.map((property) => (
                 <tr key={property._id} className="hover:bg-muted transition">
-                  {/* Property */}
                   <td className="px-5 py-4">
                     <div className="flex items-center gap-3">
                       <img
@@ -72,25 +78,15 @@ const OwnerMyProperties = () => {
                         alt={property.title}
                         className="w-12 h-10 rounded-lg object-cover flex-shrink-0"
                       />
-                      <span className="font-medium text-foreground line-clamp-1">
-                        {property.title}
-                      </span>
+                      <span className="font-medium text-foreground line-clamp-1">{property.title}</span>
                     </div>
                   </td>
-
-                  {/* Location */}
                   <td className="px-5 py-4 text-muted-foreground">{property.location}</td>
-
-                  {/* Type */}
                   <td className="px-5 py-4 text-muted-foreground capitalize">{property.propertyType}</td>
-
-                  {/* Rent */}
                   <td className="px-5 py-4 font-semibold text-foreground">
                     ৳{Number(property.rent).toLocaleString()}
                     <span className="text-xs text-muted-foreground font-normal ml-1">/{property.rentType}</span>
                   </td>
-
-                  {/* Status */}
                   <td className="px-5 py-4">
                     <span className={`text-xs font-semibold px-3 py-1 rounded-full capitalize
                       ${property.status === "approved" ? "bg-green-100 text-green-700" :
@@ -99,12 +95,10 @@ const OwnerMyProperties = () => {
                       {property.status}
                     </span>
                   </td>
-
-                  {/* Actions */}
                   <td className="px-5 py-4">
                     <div className="flex items-center gap-3">
                       <button
-                        onClick={() => alert("Update coming soon!")}
+                        onClick={() => setEditProperty(property)}
                         className="flex items-center gap-1 text-blue-500 hover:text-blue-700 text-xs font-medium transition"
                       >
                         <Pencil size={14} />
@@ -124,6 +118,19 @@ const OwnerMyProperties = () => {
             </tbody>
           </table>
         </div>
+      )}
+
+      {editProperty && (
+        <EditPropertyModal
+          property={editProperty}
+          onClose={() => setEditProperty(null)}
+          onUpdate={(updated) => {
+            setProperties(prev =>
+              prev.map(p => p._id === updated._id ? updated : p)
+            );
+            setEditProperty(null);
+          }}
+        />
       )}
     </div>
   );

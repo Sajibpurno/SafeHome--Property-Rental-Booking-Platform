@@ -41,3 +41,15 @@ export async function deleteProperty(id) {
   });
   return res.json();
 }
+
+export async function updateProperty(id, payload) {
+  const res = await fetch(`${BASE_URL}/properties/${id}`, {
+    method: 'PATCH',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${getToken()}`,
+    },
+    body: JSON.stringify(payload),
+  });
+  return res.json();
+}

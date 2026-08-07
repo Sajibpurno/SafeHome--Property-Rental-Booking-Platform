@@ -3,52 +3,48 @@
 import { authClient } from "@/lib/auth-client";
 import { useEffect, useState } from "react";
 import { CalendarDays, DollarSign, Home } from "lucide-react";
-import {
-  CartesianGrid,
-  Line,
-  LineChart,
-  ResponsiveContainer,
-  Tooltip,
-  XAxis,
-  YAxis,
-} from "recharts";
+import { CartesianGrid, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
+import { getToken } from "@/lib/api/auth";
 
 const OwnerOverviewPage = () => {
   const { data: session } = authClient.useSession();
+  const [stats, setStats] = useState({ totalEarnings: 0, totalProperties: 0, totalBookings: 0 });
+  const [chartData, setChartData] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  const [stats] = useState({
-    totalEarnings: 125000,
-    totalProperties: 5,
-    totalBookings: 12,
-  });
+  useEffect(() => {
+    if (!session?.user?.email) return;
+    const BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
 
-  const [chartData] = useState([
-    { month: "Jan", earnings: 8000 },
-    { month: "Feb", earnings: 12000 },
-    { month: "Mar", earnings: 9000 },
-    { month: "Apr", earnings: 15000 },
-    { month: "May", earnings: 11000 },
-    { month: "Jun", earnings: 18000 },
-    { month: "Jul", earnings: 14000 },
-    { month: "Aug", earnings: 20000 },
-    { month: "Sep", earnings: 16000 },
-    { month: "Oct", earnings: 13000 },
-    { month: "Nov", earnings: 19000 },
-    { month: "Dec", earnings: 22000 },
-  ]);
+    fetch(`${BASE_URL}/bookings/owner-earnings/${session.user.email}`, {
+      headers: { Authorization: `Bearer ${getToken()}` },
+    })
+      .then(res => 
+    {console.log("status:", res.status);
+    return res.json();}
+      )
+      .then(data => {
+        console.log("earnings data:", data);
+        setStats({
+          totalEarnings: data.totalEarnings || 0,
+          totalProperties: data.totalProperties || 0,
+          totalBookings: data.totalBookings || 0,
+        });
+        setChartData(data.chartData || []);
+        setLoading(false);
+      })
+      .catch(console.error);
+  }, [session]);
+
+  if (loading) return <p className="text-muted-foreground text-sm">Loading...</p>;
 
   return (
     <div className="flex flex-col gap-8">
-
-      {/* Welcome */}
       <div className="bg-gray-900 rounded-xl px-8 py-6">
         <h2 className="text-2xl font-bold text-white">Owner Dashboard 🏠</h2>
-        <p className="text-muted-foreground text-sm mt-1">
-          Manage your properties, bookings, and earnings.
-        </p>
+        <p className="text-muted-foreground text-sm mt-1">Manage your properties, bookings, and earnings.</p>
       </div>
 
-      {/* Stat Cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         {[
           { label: "Total Earnings", value: `৳${stats.totalEarnings.toLocaleString()}`, icon: DollarSign, color: "text-green-600 bg-green-50" },
@@ -67,7 +63,6 @@ const OwnerOverviewPage = () => {
         ))}
       </div>
 
-      {/* Monthly Earnings Chart */}
       <div className="bg-card border border-border rounded-xl p-6">
         <h3 className="text-base font-bold text-foreground mb-6">Monthly Earnings</h3>
         <ResponsiveContainer width="100%" height={260}>
@@ -76,18 +71,10 @@ const OwnerOverviewPage = () => {
             <XAxis dataKey="month" tick={{ fontSize: 12 }} />
             <YAxis tick={{ fontSize: 12 }} />
             <Tooltip formatter={(val) => `৳${val.toLocaleString()}`} />
-            <Line
-              type="monotone"
-              dataKey="earnings"
-              stroke="#2563eb"
-              strokeWidth={2.5}
-              dot={{ r: 4, fill: "#2563eb" }}
-              activeDot={{ r: 6 }}
-            />
+            <Line type="monotone" dataKey="earnings" stroke="#2563eb" strokeWidth={2.5} dot={{ r: 4, fill: "#2563eb" }} activeDot={{ r: 6 }} />
           </LineChart>
         </ResponsiveContainer>
       </div>
-
     </div>
   );
 };

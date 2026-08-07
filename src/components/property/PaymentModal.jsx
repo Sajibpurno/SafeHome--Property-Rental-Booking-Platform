@@ -3,42 +3,37 @@
 import { loadStripe } from "@stripe/stripe-js";
 import { Elements } from "@stripe/react-stripe-js";
 import CheckoutForm from "./CheckoutForm";
-import { updateBookingStatus } from "@/lib/api/bookings";
 import { useRouter } from "next/navigation";
+import { getToken } from "@/lib/api/auth";
+import { toast } from "@heroui/react";
 
 export default function PaymentModal({ booking, onClose }) {
   const router = useRouter();
-
-
-  const stripePromise = loadStripe(
-    process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY
-  );
+  const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY);
 
   const handleSuccess = async (transactionId) => {
-  try {
-    // booking status + payment status update
-    await updateBookingStatus(booking._id, "approved");
-    
-    // payment status paid করো
-    await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/bookings/${booking._id}`, {
-      method: 'PATCH',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${getToken()}`,
-      },
-      body: JSON.stringify({ 
-        paymentStatus: 'paid',
-        transactionId,
-      }),
-    });
-
-    toast.success("Payment successful! Booking confirmed.");
-    onClose();
-    router.push("/dashboard/bookings");
-  } catch (err) {
-    console.error(err);
-  }
-};
+    try {
+      const BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+      await fetch(`${BASE_URL}/bookings/${booking._id}`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${getToken()}`,
+        },
+        body: JSON.stringify({
+          status: 'approved',
+          paymentStatus: 'paid',
+          transactionId,
+        }),
+      });
+      toast.success("Payment successful! Booking confirmed.");
+      onClose();
+      router.push("/dashboard/bookings");
+    } catch (err) {
+      console.error(err);
+      toast.error("Something went wrong.");
+    }
+  };
 
   return (
     <div className="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 flex items-center justify-center px-4">
@@ -60,10 +55,7 @@ export default function PaymentModal({ booking, onClose }) {
           <p className="text-red-500 text-sm text-center">Stripe key missing!</p>
         )}
 
-        <button
-          onClick={onClose}
-          className="w-full mt-3 border border-gray-200 text-sm text-gray-600 py-2.5 rounded-lg hover:bg-gray-50 transition"
-        >
+        <button onClick={onClose} className="w-full mt-3 border border-gray-200 text-sm text-gray-600 py-2.5 rounded-lg hover:bg-gray-50 transition">
           Cancel
         </button>
       </div>

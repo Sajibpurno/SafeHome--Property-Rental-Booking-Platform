@@ -2,20 +2,12 @@
 
 import { useEffect, useState } from "react";
 import { getAllUsers, getAllPropertiesAdmin, getAllBookingsAdmin } from "@/lib/api/admin";
+import { getToken } from "@/lib/api/auth";
 import { Users, Home, CalendarDays, UserCheck } from "lucide-react";
 import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid,
   Tooltip, ResponsiveContainer
 } from "recharts";
-
-const monthlyData = [
-  { month: "Jan", earnings: 1000 },
-  { month: "Feb", earnings: 1600 },
-  { month: "Mar", earnings: 1500 },
-  { month: "Apr", earnings: 2300 },
-  { month: "May", earnings: 3000 },
-  { month: "Jun", earnings: 2800 },
-];
 
 const AdminOverviewPage = () => {
   const [stats, setStats] = useState({
@@ -24,22 +16,29 @@ const AdminOverviewPage = () => {
     totalProperties: 0,
     totalBookings: 0,
   });
+  const [chartData, setChartData] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    const BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+
     Promise.all([
       getAllUsers(),
       getAllPropertiesAdmin(),
       getAllBookingsAdmin(),
-    ]).then(([users, properties, bookings]) => {
+      fetch(`${BASE_URL}/admin/earnings`, {
+        headers: { Authorization: `Bearer ${getToken()}` },
+      }).then(res => res.json()),
+    ]).then(([users, properties, bookings, earnings]) => {
       setStats({
-        totalUsers: users.filter((u) => u.role === "user" || !u.role).length,
-        totalOwners: users.filter((u) => u.role === "owner").length,
-        totalProperties: properties.length,
-        totalBookings: bookings.length,
+        totalUsers: users.filter((u) => u.role?.toLowerCase() === "tenant" || u.role?.toLowerCase() === "user" || !u.role).length,
+        totalOwners: users.filter((u) => u.role?.toLowerCase() === "owner").length,
+        totalProperties: Array.isArray(properties) ? properties.length : (properties.properties?.length || 0),
+        totalBookings: Array.isArray(bookings) ? bookings.length : 0,
       });
+      setChartData(earnings.chartData || []);
       setLoading(false);
-    });
+    }).catch(console.error);
   }, []);
 
   if (loading) return <p className="text-muted-foreground text-sm">Loading...</p>;
@@ -70,15 +69,19 @@ const AdminOverviewPage = () => {
       {/* Monthly Earnings Chart */}
       <div className="bg-card border border-border rounded-xl p-6">
         <h3 className="text-base font-bold text-foreground mb-6">Monthly Earnings</h3>
-        <ResponsiveContainer width="100%" height={300}>
-          <BarChart data={monthlyData} barSize={60}>
-            <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" vertical={false} />
-            <XAxis dataKey="month" tick={{ fontSize: 12 }} axisLine={false} tickLine={false} />
-            <YAxis tick={{ fontSize: 12 }} axisLine={false} tickLine={false} />
-            <Tooltip formatter={(val) => `৳${val.toLocaleString()}`} />
-            <Bar dataKey="earnings" fill="#111827" radius={[4, 4, 0, 0]} />
-          </BarChart>
-        </ResponsiveContainer>
+        {chartData.every(d => d.earnings === 0) ? (
+          <p className="text-muted-foreground text-sm text-center py-10">No earnings data yet.</p>
+        ) : (
+          <ResponsiveContainer width="100%" height={300}>
+            <BarChart data={chartData} barSize={60}>
+              <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" vertical={false} />
+              <XAxis dataKey="month" tick={{ fontSize: 12 }} axisLine={false} tickLine={false} />
+              <YAxis tick={{ fontSize: 12 }} axisLine={false} tickLine={false} />
+              <Tooltip formatter={(val) => `৳${val.toLocaleString()}`} />
+              <Bar dataKey="earnings" fill="#111827" radius={[4, 4, 0, 0]} />
+            </BarChart>
+          </ResponsiveContainer>
+        )}
       </div>
 
     </div>

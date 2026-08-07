@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import BookingModal from "./BookingModal";
 import PaymentModal from "./PaymentModal";
 import { addFavorite } from "@/lib/api/favorites";
@@ -8,11 +9,20 @@ import { authClient } from "@/lib/auth-client";
 
 export default function BookingBox({ property }) {
   const { data: session } = authClient.useSession();
+  const router = useRouter();
   const [showModal, setShowModal] = useState(false);
   const [showPayment, setShowPayment] = useState(false);
   const [currentBooking, setCurrentBooking] = useState(null);
   const [favLoading, setFavLoading] = useState(false);
   const [favAdded, setFavAdded] = useState(false);
+
+  const isOwner = session?.user?.email === property.ownerEmail;
+
+  const handleBookNow = () => {
+    if (!session) return router.push('/signin');
+    if (isOwner) return alert("You cannot book your own property!");
+    setShowModal(true);
+  };
 
   const handlePayment = (booking) => {
     setCurrentBooking(booking);
@@ -50,10 +60,14 @@ export default function BookingBox({ property }) {
         </p>
 
         <button
-          onClick={() => setShowModal(true)}
-          className="w-full bg-black text-white text-sm font-semibold py-3 rounded-lg hover:bg-gray-800 transition"
+          onClick={handleBookNow}
+          disabled={isOwner}
+          className={`w-full text-sm font-semibold py-3 rounded-lg transition
+            ${isOwner
+              ? "bg-gray-200 text-gray-400 cursor-not-allowed"
+              : "bg-black text-white hover:bg-gray-800"}`}
         >
-          Book Now
+          {isOwner ? "Your Property" : "Book Now"}
         </button>
 
         <button
