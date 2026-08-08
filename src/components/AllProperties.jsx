@@ -8,7 +8,7 @@ import { Button } from "@heroui/react";
 import { motion, AnimatePresence } from "framer-motion";
 
 export default function AllProperties() {
-  // ১. useSearchParams কল করা হলো
+  // useSearchParams 
   const searchParams = useSearchParams();
   const router = useRouter();
 
@@ -17,7 +17,7 @@ export default function AllProperties() {
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   
-  // ২. URL params থেকে filter এর ইনিশিয়াল স্টেট নেওয়া হলো
+  // . URL params filter 
   const [filters, setFilters] = useState({
     location: searchParams.get("location") || "",
     propertyType: searchParams.get("propertyType") || "",

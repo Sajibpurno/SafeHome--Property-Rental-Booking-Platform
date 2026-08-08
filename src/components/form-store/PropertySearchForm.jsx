@@ -4,13 +4,12 @@ import { useState, useRef, useEffect } from "react";
 import { Search, MapPin, ChevronDown } from "lucide-react";
 
 const PropertySearchForm = ({ handleSearch }) => {
-  const [propertyType, setPropertyType] = useState("Apartment");
+  const [propertyType, setPropertyType] = useState("Property Type");
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const dropdownRef = useRef(null);
 
-  const propertyOptions = ["Apartment", "Office", "House", "Villa", "Studio"];
+  const propertyOptions = ["Property Type","Apartment", "Office", "House", "Villa", "Studio"];
 
-  // ড্রপডাউনের বাইরে ক্লিক করলে তা বন্ধ করার জন্য
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
