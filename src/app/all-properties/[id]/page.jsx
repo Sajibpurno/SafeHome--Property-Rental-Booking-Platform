@@ -2,19 +2,23 @@
 
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
-import { MapPin, BedDouble, Bath, Maximize2, Tag } from "lucide-react";
+import { MapPin, BedDouble, Bath, Maximize2, Tag, ChevronLeft, ChevronRight } from "lucide-react";
 import { getPropertyById } from "@/lib/api/properties";
 import BookingBox from "@/components/property/BookingBox";
 import ReviewBox from "@/components/property/ReviewBox";
+import { motion, AnimatePresence } from "framer-motion";
 
 export default function PropertyDetailsPage() {
   const { id } = useParams();
   const [property, setProperty] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [activeImg, setActiveImg] = useState(0);
 
   useEffect(() => {
     getPropertyById(id)
-      .then(setProperty)
+      .then((data) => {
+        setProperty(data);
+      })
       .catch(console.error)
       .finally(() => setLoading(false));
   }, [id]);
@@ -22,19 +26,76 @@ export default function PropertyDetailsPage() {
   if (loading) return <div className="min-h-screen flex items-center justify-center text-muted-foreground text-sm">Loading...</div>;
   if (!property) return <div className="min-h-screen flex items-center justify-center text-muted-foreground text-sm">Property not found.</div>;
 
+  const images = property.images?.length ? property.images : [property.imageUrl];
+
+  const handlePrev = () => setActiveImg(i => (i - 1 + images.length) % images.length);
+  const handleNext = () => setActiveImg(i => (i + 1) % images.length);
+
   return (
     <div className="min-h-screen bg-background py-10 px-4">
       <div className="max-w-5xl mx-auto">
 
-        {/* Top: Image + Booking Box */}
         <div className="flex flex-col lg:flex-row gap-8">
 
           {/* Left */}
           <div className="flex-1">
-            {/* Image */}
-            <div className="rounded-xl overflow-hidden h-72 w-full">
-              <img src={property.imageUrl} alt={property.title} className="w-full h-full object-cover" />
+
+            {/* Main Image */}
+            <div className="relative rounded-xl overflow-hidden h-72 w-full bg-muted">
+              <AnimatePresence mode="wait">
+                <motion.img
+                  key={activeImg}
+                  src={images[activeImg]}
+                  alt={property.title}
+                  className="w-full h-full object-cover"
+                  initial={{ opacity: 0, x: 50 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: -50 }}
+                  transition={{ duration: 0.3 }}
+                />
+              </AnimatePresence>
+
+              {/* Prev/Next buttons */}
+              {images.length > 1 && (
+                <>
+                  <button
+                    onClick={handlePrev}
+                    className="absolute left-3 top-1/2 -translate-y-1/2 w-8 h-8 bg-black/50 text-white rounded-full flex items-center justify-center hover:bg-black/70 transition"
+                  >
+                    <ChevronLeft size={18} />
+                  </button>
+                  <button
+                    onClick={handleNext}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 w-8 h-8 bg-black/50 text-white rounded-full flex items-center justify-center hover:bg-black/70 transition"
+                  >
+                    <ChevronRight size={18} />
+                  </button>
+
+                  {/* Image counter */}
+                  <div className="absolute bottom-3 right-3 bg-black/50 text-white text-xs px-2 py-1 rounded-full">
+                    {activeImg + 1} / {images.length}
+                  </div>
+                </>
+              )}
             </div>
+
+            {/* Thumbnails */}
+            {images.length > 1 && (
+              <div className="flex gap-2 mt-3 overflow-x-auto pb-1">
+                {images.map((img, i) => (
+                  <motion.button
+                    key={i}
+                    onClick={() => setActiveImg(i)}
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    className={`flex-shrink-0 w-16 h-12 rounded-lg overflow-hidden border-2 transition
+                      ${activeImg === i ? "border-blue-500" : "border-transparent"}`}
+                  >
+                    <img src={img} alt={`thumb-${i}`} className="w-full h-full object-cover" />
+                  </motion.button>
+                ))}
+              </div>
+            )}
 
             {/* Title + Location */}
             <div className="mt-5">
@@ -72,7 +133,7 @@ export default function PropertyDetailsPage() {
                 <h3 className="text-sm font-semibold text-red-500 mb-3">🔴 Amenities</h3>
                 <div className="flex flex-wrap gap-2">
                   {property.amenities.map((a) => (
-                    <span key={a} className="text-xs bg-surface-2 text-muted-foreground px-3 py-1 rounded-full flex items-center gap-1">
+                    <span key={a} className="text-xs bg-muted text-muted-foreground px-3 py-1 rounded-full flex items-center gap-1">
                       ✅ {a}
                     </span>
                   ))}

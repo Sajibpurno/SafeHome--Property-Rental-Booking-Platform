@@ -8,11 +8,16 @@ const AllBookingsPage = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    getAllBookingsAdmin()
-      .then(setBookings)
-      .catch(console.error)
-      .finally(() => setLoading(false));
-  }, []);
+  getAllBookingsAdmin()
+    .then((data) => {
+      const sorted = Array.isArray(data)
+        ? [...data].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+        : [];
+      setBookings(sorted);
+    })
+    .catch(console.error)
+    .finally(() => setLoading(false));
+}, []);
 
   if (loading) return <p className="text-muted-foreground text-sm">Loading...</p>;
 

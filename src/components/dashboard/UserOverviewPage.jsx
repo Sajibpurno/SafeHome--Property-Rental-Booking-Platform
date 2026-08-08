@@ -4,6 +4,8 @@ import { getBookingsByEmail } from "@/lib/api/bookings";
 import { getFavoritesByEmail } from "@/lib/api/favorites";
 import { CalendarDays, Heart, Home, User } from "lucide-react";
 import { PieChart, Pie, Cell, Tooltip, Legend, ResponsiveContainer } from "recharts";
+import { ScaleLoader
+ } from "react-spinners";
 
 const COLORS = ["#f59e0b", "#22c55e", "#ef4444"];
 
@@ -38,7 +40,10 @@ const UserOverviewPage = () => {
 
   const recentBookings = bookings.slice(0, 4);
 
-  if (loading) return <p className="text-muted-foreground text-sm">Loading...</p>;
+  if (loading) {
+      return <div className="h-screen flex flex-col items-center justify-center bg-muted text-muted-foreground font-medium"><ScaleLoader
+ size={100} /><p>Loading Overview...</p></div>;
+    }
 
   return (
     <div className="flex flex-col gap-8">

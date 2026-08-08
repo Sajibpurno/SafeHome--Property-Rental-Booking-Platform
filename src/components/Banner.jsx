@@ -1,8 +1,7 @@
 "use client";
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Form, Button, SearchField } from "@heroui/react";
-import { Search } from "lucide-react";
+import { useRouter } from "next/navigation";
 import PropertySearchForm from "./form-store/PropertySearchForm";
 
 const images = [
@@ -15,6 +14,7 @@ const images = [
 
 const Banner = () => {
   const [index, setIndex] = useState(0);
+  const router = useRouter();
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -26,12 +26,22 @@ const Banner = () => {
   const handleSearch = (e) => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
-    console.log("Search Data:", Object.fromEntries(formData));
+    const location = formData.get("location") || "";
+    const type = formData.get("type") || "";
+    const maxPrice = formData.get("maxPrice") || "";
+    const minPrice = formData.get("minPrice") || "";
+
+    const params = new URLSearchParams();
+    if (location) params.set("location", location);
+    if (type) params.set("propertyType", type.toLowerCase());
+    if (maxPrice) params.set("maxPrice", maxPrice);
+    if (minPrice) params.set("minPrice", minPrice);
+
+    router.push(`/all-properties?${params.toString()}`);
   };
 
   return (
     <section className="relative h-[800px] w-full flex items-center justify-center overflow-hidden">
-      {/* Slider: popLayout use kora hoyeche jate transition-e kichu na thake */}
       <div className="absolute inset-0">
         <AnimatePresence mode="popLayout">
           <motion.img
@@ -47,40 +57,9 @@ const Banner = () => {
       </div>
       <div className="absolute inset-0 bg-black/50 z-10" />
 
-      {/* Content */}
       <div className="relative z-20 text-center text-white px-4 w-full">
         <h1 className="text-5xl md:text-7xl font-bold mb-4 drop-shadow-lg">Find Your Dream Home</h1>
         <p className="text-lg mb-10 opacity-90 font-medium">Book apartments, villas and houses with trusted owners across Bangladesh.</p>
-
-        {/* Search Form */}
-        {/* <Form 
-          onSubmit={handleSearch}
-          className="bg-white/10 backdrop-blur-md p-3 rounded-full border border-white/30 flex flex-col md:flex-row gap-2 items-center justify-between max-w-5xl mx-auto shadow-2xl"
-        >
-          <SearchField name="location" className="w-full md:w-1/4 px-2">
-             <SearchField.Input placeholder="Location" className="placeholder:text-white/80 bg-transparent border-none focus:outline-none" />
-          </SearchField>
-
-          <div className="w-px h-8 bg-white/20 hidden md:block" />
-
-          <SearchField name="type" className="w-full md:w-1/4 px-2">
-             <SearchField.Input placeholder="Property Type" className="placeholder:text-white/80 bg-transparent border-none focus:outline-none" />
-          </SearchField>
-
-          <div className="w-px h-8 bg-white/20 hidden md:block" />
-
-          <SearchField name="maxPrice" className="w-full md:w-1/6 px-2">
-             <SearchField.Input placeholder="Max Price" className="placeholder:text-white/80 bg-transparent border-none focus:outline-none" />
-          </SearchField>
-          
-          <SearchField name="minPrice" className="w-full md:w-1/6 px-2">
-             <SearchField.Input placeholder="Min Price" className="placeholder:text-white/80 bg-transparent border-none focus:outline-none" />
-          </SearchField>
-
-          <Button type="submit" className="bg-[#1a1a1a] text-white rounded-full items-center flex px-8 h-12 hover:bg-black transition-all">
-            <Search size={18} className="mr-2" /> Search
-          </Button>
-        </Form> */}
         <PropertySearchForm handleSearch={handleSearch} />
       </div>
     </section>

@@ -8,6 +8,7 @@ import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid,
   Tooltip, ResponsiveContainer
 } from "recharts";
+import { ScaleLoader } from "react-spinners";
 
 const AdminOverviewPage = () => {
   const [stats, setStats] = useState({
@@ -41,7 +42,10 @@ const AdminOverviewPage = () => {
     }).catch(console.error);
   }, []);
 
-  if (loading) return <p className="text-muted-foreground text-sm">Loading...</p>;
+  if (loading){
+      return <div className="h-screen flex flex-col items-center justify-center bg-muted text-muted-foreground font-medium"><ScaleLoader
+ size={100} /><p>Loading Overview...</p></div>;
+    }
 
   return (
     <div className="flex flex-col gap-6">

@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { CalendarDays, DollarSign, Home } from "lucide-react";
 import { CartesianGrid, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 import { getToken } from "@/lib/api/auth";
+import { ScaleLoader } from "react-spinners";
 
 const OwnerOverviewPage = () => {
   const { data: session } = authClient.useSession();
@@ -36,7 +37,10 @@ const OwnerOverviewPage = () => {
       .catch(console.error);
   }, [session]);
 
-  if (loading) return <p className="text-muted-foreground text-sm">Loading...</p>;
+  if (loading){
+      return <div className="h-screen flex flex-col items-center justify-center bg-muted text-muted-foreground font-medium"><ScaleLoader
+ size={100} /><p>Loading Overview...</p></div>;
+    }
 
   return (
     <div className="flex flex-col gap-8">
