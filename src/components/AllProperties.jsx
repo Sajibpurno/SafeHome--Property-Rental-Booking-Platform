@@ -8,6 +8,7 @@ import { Button } from "@heroui/react";
 import { motion, AnimatePresence } from "framer-motion";
 
 export default function AllProperties() {
+  // ১. useSearchParams কল করা হলো
   const searchParams = useSearchParams();
   const router = useRouter();
 
@@ -15,39 +16,22 @@ export default function AllProperties() {
   const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
-
-  // URL Query Parameters থেকে ডাটা রিড করা
-  const locationParam = searchParams.get("location") || "";
-  const propertyTypeParam = searchParams.get("propertyType") || "";
-  const minPriceParam = searchParams.get("minPrice") || "";
-  const maxPriceParam = searchParams.get("maxPrice") || "";
-
+  
+  // ২. URL params থেকে filter এর ইনিশিয়াল স্টেট নেওয়া হলো
   const [filters, setFilters] = useState({
-    location: locationParam,
-    propertyType: propertyTypeParam,
-    maxPrice: maxPriceParam,
-    minPrice: minPriceParam,
+    location: searchParams.get("location") || "",
+    propertyType: searchParams.get("propertyType") || "",
+    maxPrice: searchParams.get("maxPrice") || "",
+    minPrice: searchParams.get("minPrice") || "",
     sortBy: "",
   });
 
-  // URL Param আপডেট হলে Input Box-গুলোতেও যেন সেই লেখাটি সাথে সাথে বসে যায়
-  useEffect(() => {
-    setFilters({
-      location: searchParams.get("location") || "",
-      propertyType: searchParams.get("propertyType") || "",
-      maxPrice: searchParams.get("maxPrice") || "",
-      minPrice: searchParams.get("minPrice") || "",
-      sortBy: "",
-    });
-  }, [searchParams]);
-
-  // Data Fetching
   useEffect(() => {
     setLoading(true);
-    getAllProperties(currentPage, 12) // পেজ সাইজ একটু বাড়িয়ে দেয়া ভালো
+    getAllProperties(currentPage, 6)
       .then((data) => {
-        setProperties(data?.properties || []);
-        setTotalPages(data?.totalPages || 1);
+        setProperties(data.properties || []);
+        setTotalPages(data.totalPages || 1);
       })
       .catch(console.error)
       .finally(() => setLoading(false));
@@ -55,45 +39,25 @@ export default function AllProperties() {
 
   const handleReset = () => {
     setFilters({ location: "", propertyType: "", maxPrice: "", minPrice: "", sortBy: "" });
-    router.push("/all-properties"); // URL ক্লিয়ার করা
   };
 
-  // Safe Matching Filter Engine
   const filtered = properties
     .filter((p) => {
-      // 1. Location Search
-      if (filters.location) {
-        const propLocation = p?.location?.toLowerCase() || "";
-        const searchLocation = filters.location.toLowerCase().trim();
-        if (!propLocation.includes(searchLocation)) return false;
-      }
-
-      // 2. Property Type Search (Case Mismatch Fix)
-      if (filters.propertyType) {
-        const propType = (p?.propertyType || p?.type || "").toLowerCase().trim();
-        const searchType = filters.propertyType.toLowerCase().trim();
-        if (propType !== searchType) return false;
-      }
-
-      // 3. Price Filter (Supports 'rent' or 'monthlyRent' fields)
-      const rentPrice = Number(p?.rent || p?.monthlyRent || 0);
-
-      if (filters.minPrice && rentPrice < Number(filters.minPrice)) return false;
-      if (filters.maxPrice && rentPrice > Number(filters.maxPrice)) return false;
-
+      if (filters.location && !p.location.toLowerCase().includes(filters.location.toLowerCase())) return false;
+      if (filters.propertyType && p.propertyType !== filters.propertyType) return false;
+      if (filters.minPrice && Number(p.rent) < Number(filters.minPrice)) return false;
+      if (filters.maxPrice && Number(p.rent) > Number(filters.maxPrice)) return false;
       return true;
     })
     .sort((a, b) => {
-      const priceA = Number(a?.rent || a?.monthlyRent || 0);
-      const priceB = Number(b?.rent || b?.monthlyRent || 0);
-
-      if (filters.sortBy === "low") return priceA - priceB;
-      if (filters.sortBy === "high") return priceB - priceA;
+      if (filters.sortBy === "low") return Number(a.rent) - Number(b.rent);
+      if (filters.sortBy === "high") return Number(b.rent) - Number(a.rent);
       return 0;
     });
 
   return (
     <div className="min-h-screen bg-background">
+
       {/* Filter Bar */}
       <motion.div
         initial={{ opacity: 0, y: -20 }}
@@ -103,60 +67,50 @@ export default function AllProperties() {
       >
         <div className="bg-card border border-border rounded-xl p-5 shadow-sm">
           <div className="flex flex-wrap gap-3">
-            {/* Location Input */}
             <div className="flex items-center gap-2 border border-border rounded-lg px-3 h-11 flex-1 min-w-[140px]">
               <MapPin size={15} className="text-muted-foreground" />
               <input
                 type="text"
                 placeholder="Location"
                 value={filters.location}
-                onChange={(e) => setFilters((prev) => ({ ...prev, location: e.target.value }))}
+                onChange={(e) => setFilters({ ...filters, location: e.target.value })}
                 className="text-sm outline-none w-full text-foreground placeholder:text-muted-foreground bg-transparent"
               />
             </div>
-
-            {/* Property Type Dropdown */}
             <select
               value={filters.propertyType}
-              onChange={(e) => setFilters((prev) => ({ ...prev, propertyType: e.target.value }))}
-              className="border border-border rounded-lg px-3 h-11 text-sm text-muted-foreground outline-none flex-1 min-w-[140px] bg-card cursor-pointer capitalize"
+              onChange={(e) => setFilters({ ...filters, propertyType: e.target.value })}
+              className="border border-border rounded-lg px-3 h-11 text-sm text-muted-foreground outline-none flex-1 min-w-[140px] bg-card cursor-pointer"
             >
-              <option value="">All Property Types</option>
-              <option value="Apartment">Apartment</option>
-              <option value="Villa">Villa</option>
-              <option value="House">House</option>
-              <option value="Office">Office</option>
-              <option value="Studio">Studio</option>
+              <option value="">Property Type</option>
+              <option value="apartment">Apartment</option>
+              <option value="villa">Villa</option>
+              <option value="house">House</option>
+              <option value="office">Office</option>
             </select>
-
-            {/* Min Price */}
-            <div className="flex items-center gap-2 border border-border rounded-lg px-3 h-11 flex-1 min-w-[120px]">
-              <span className="text-muted-foreground text-sm">৳</span>
-              <input
-                type="number"
-                placeholder="Min price"
-                value={filters.minPrice}
-                onChange={(e) => setFilters((prev) => ({ ...prev, minPrice: e.target.value }))}
-                className="text-sm outline-none w-full text-foreground placeholder:text-muted-foreground bg-transparent"
-              />
-            </div>
-
-            {/* Max Price */}
             <div className="flex items-center gap-2 border border-border rounded-lg px-3 h-11 flex-1 min-w-[120px]">
               <span className="text-muted-foreground text-sm">৳</span>
               <input
                 type="number"
                 placeholder="Max price"
                 value={filters.maxPrice}
-                onChange={(e) => setFilters((prev) => ({ ...prev, maxPrice: e.target.value }))}
+                onChange={(e) => setFilters({ ...filters, maxPrice: e.target.value })}
                 className="text-sm outline-none w-full text-foreground placeholder:text-muted-foreground bg-transparent"
               />
             </div>
-
-            {/* Sort Dropdown */}
+            <div className="flex items-center gap-2 border border-border rounded-lg px-3 h-11 flex-1 min-w-[120px]">
+              <span className="text-muted-foreground text-sm">৳</span>
+              <input
+                type="number"
+                placeholder="Min price"
+                value={filters.minPrice}
+                onChange={(e) => setFilters({ ...filters, minPrice: e.target.value })}
+                className="text-sm outline-none w-full text-foreground placeholder:text-muted-foreground bg-transparent"
+              />
+            </div>
             <select
               value={filters.sortBy}
-              onChange={(e) => setFilters((prev) => ({ ...prev, sortBy: e.target.value }))}
+              onChange={(e) => setFilters({ ...filters, sortBy: e.target.value })}
               className="border border-border rounded-lg px-3 h-11 text-sm text-muted-foreground outline-none flex-1 min-w-[130px] bg-card cursor-pointer"
             >
               <option value="">Sort By</option>
@@ -164,7 +118,6 @@ export default function AllProperties() {
               <option value="high">Price: High to Low</option>
             </select>
           </div>
-
           <div className="flex justify-end mt-3">
             <motion.button
               whileHover={{ scale: 1.02 }}
@@ -178,7 +131,7 @@ export default function AllProperties() {
         </div>
       </motion.div>
 
-      {/* Cards List */}
+      {/* Cards */}
       <div className="max-w-5xl mx-auto px-4 py-8">
         {loading ? (
           <div className="flex justify-center items-center py-20">
@@ -194,7 +147,7 @@ export default function AllProperties() {
             animate={{ opacity: 1 }}
             className="text-center text-muted-foreground text-sm py-20"
           >
-            No properties found matching your criteria.
+            No properties found.
           </motion.p>
         ) : (
           <motion.div
@@ -202,7 +155,7 @@ export default function AllProperties() {
             animate="show"
             variants={{
               hidden: { opacity: 0 },
-              show: { opacity: 1, transition: { staggerChildren: 0.1 } },
+              show: { opacity: 1, transition: { staggerChildren: 0.1 } }
             }}
             className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
           >
@@ -212,7 +165,7 @@ export default function AllProperties() {
                   key={property._id}
                   variants={{
                     hidden: { opacity: 0, y: 20 },
-                    show: { opacity: 1, y: 0 },
+                    show: { opacity: 1, y: 0 }
                   }}
                   exit={{ opacity: 0, scale: 0.9 }}
                   whileHover={{ y: -6 }}
@@ -223,19 +176,19 @@ export default function AllProperties() {
                     <motion.img
                       whileHover={{ scale: 1.05 }}
                       transition={{ duration: 0.4 }}
-                      src={property.imageUrl || property.images?.[0] || "/placeholder.jpg"}
+                      src={property.imageUrl}
                       alt={property.title}
                       className="w-full h-full object-cover"
                     />
                   </div>
                   <div className="p-5 flex flex-col gap-2 flex-1">
-                    <h3 className="text-base font-semibold text-foreground line-clamp-1">{property.title}</h3>
+                    <h3 className="text-base font-semibold text-foreground">{property.title}</h3>
                     <div className="flex items-center gap-1 text-muted-foreground text-sm">
                       <span>📍</span>
-                      <span className="line-clamp-1">{property.location}</span>
+                      <span>{property.location}</span>
                     </div>
                     <p className="text-blue-600 font-semibold text-sm">
-                      ৳{Number(property.rent || property.monthlyRent || 0).toLocaleString()} /{property.rentType || "Month"}
+                      ৳{Number(property.rent).toLocaleString()} /{property.rentType}
                     </p>
                     <Button
                       onClick={() => router.push(`/all-properties/${property._id}`)}
@@ -264,11 +217,10 @@ export default function AllProperties() {
               <button
                 key={page}
                 onClick={() => setCurrentPage(page)}
-                className={`w-9 h-9 rounded-lg text-sm font-medium transition ${
-                  currentPage === page
+                className={`w-9 h-9 rounded-lg text-sm font-medium transition
+                  ${currentPage === page
                     ? "bg-black text-white"
-                    : "border border-border text-muted-foreground hover:bg-muted"
-                }`}
+                    : "border border-border text-muted-foreground hover:bg-muted"}`}
               >
                 {page}
               </button>
@@ -278,7 +230,7 @@ export default function AllProperties() {
               disabled={currentPage === totalPages}
               className="w-9 h-9 flex items-center justify-center rounded-lg border border-border text-muted-foreground hover:bg-muted disabled:opacity-40 transition"
             >
-              <ChevronRight size={16/>
+              <ChevronRight size={16} />
             </button>
           </div>
         )}

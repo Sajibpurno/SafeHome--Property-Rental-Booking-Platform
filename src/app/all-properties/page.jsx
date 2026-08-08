@@ -1,6 +1,5 @@
 import { Suspense } from "react";
 import AllProperties from "../../components/AllProperties";
-// import AllProperties from "./AllProperties";
 
 export default function AllPropertiesPage() {
   return (
